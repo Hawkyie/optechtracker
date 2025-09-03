@@ -50,19 +50,9 @@ def create_device_from_api(data: dict):
         "event_log": [{"ts": data.get("timestamp"), "type": "IMPORT", "payload": data}]
     }
 
+# --- keep your imports & function signature as-is ---
+
 def refresh_device_from_api(device: dict, payload: dict) -> dict:
-    """
-    Update a device in-place from an API payload.
-    Returns:
-      {
-        "status": "updated" | "no_change",
-        "updated_fields": [...],
-        "tamper_changed": bool,
-        "tamper": "TAMPERED" | "OK" | "UNKNOWN",
-        "connectivity_changed": bool,
-        "connectivity": "ONLINE" | "OFFLINE" | "UNKNOWN",
-      }
-    """
     changed_fields = []
 
     # Keep prior values to compute change flags
@@ -74,7 +64,11 @@ def refresh_device_from_api(device: dict, payload: dict) -> dict:
     for k in ("lat", "lon"):
         v = pos.get(k)
         if v is not None and v != device.get(k):
-            device[k] = v
+            # ensure numbers if strings arrive
+            try:
+                device[k] = float(v)
+            except Exception:
+                device[k] = v
             changed_fields.append(k)
 
     # ---- Last seen
@@ -117,40 +111,30 @@ def refresh_device_from_api(device: dict, payload: dict) -> dict:
         device["connectivity"] = conn
         changed_fields.append("connectivity")
 
+    # ---- Minimal event (so image-type checks still work)
     pl = payload.get("payload") or {}
-    ptype = (pl.get("type") or "").lower()
-
-    # If API gives a real URL, prefer it
-    direct_url = pl.get("url") or pl.get("thumbnail_url")
-    if isinstance(direct_url, str) and direct_url.startswith(("http://", "https://")):
-        if direct_url != device.get("last_image_url"):
-            device["last_image_url"] = direct_url
-            changed_fields.append("last_image_url")
-
-    # Always capture an image-id if present (for fragments)
-    img_id = pl.get("id")
-    if img_id and img_id != device.get("last_image_id"):
-        device["last_image_id"] = img_id
-        changed_fields.append("last_image_id")
-
-    # ---- Event log (bounded)
+    ptype = (pl.get("type") or payload.get("type") or "").lower()
     if "event_log" not in device or not isinstance(device["event_log"], list):
         device["event_log"] = []
     device["event_log"].append({
         "ts": ts or utils.today_iso_date(),
-        "type": "API_REFRESH",
-        "payload_type": ptype or payload.get("type"),
+        "type": ptype or "API_REFRESH",
     })
     if len(device["event_log"]) > 50:
         device["event_log"] = device["event_log"][-50:]
 
-    result = {
+    # >>> NEW: compute change flags for alerts
+    tamper_changed = (device.get("tamper_status") != prev_tamper)
+    connectivity_changed = (device.get("connectivity") != prev_conn)
+
+    return {
         "status": "updated" if changed_fields else "no_change",
         "updated_fields": changed_fields,
-        "tamper_changed": False,
+        "tamper_changed": tamper_changed,
         "tamper": device.get("tamper_status"),
-        "connectivity_changed": False,
+        "connectivity_changed": connectivity_changed,
         "connectivity": device.get("connectivity"),
     }
-    return result
+
+
 

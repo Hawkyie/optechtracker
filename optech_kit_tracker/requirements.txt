@@ -6,3 +6,4 @@ requests
 opencv-python
 pip install requests
 pip install opencv-python
+pip install tkintermapview

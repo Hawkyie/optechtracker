@@ -23,21 +23,36 @@ edit_btn = None
 del_btn = None
 save_var = None
 total_var = None
+alerts_list = None
+map_widget = None     
+_map_markers = []
+last_selected_iid = None
+_suppress_select_events = False
+
 
 devices = []
 POLL_MS = 10_000
 
-# Default RTSP used when device.stream_url is not set
+
 DEFAULT_RTSP_URL = os.getenv("OPTECH_RTSP_URL", "rtsp://192.168.8.185:8554/cam")
 
+def init_handlers(
+    _root, _tatree, _details_text,
+    _img_btn, _edit_btn, _del_btn,
+    _save_var, _total_var,
+    poll_ms: int = 10_000,
+    _alerts_list=None,
+    _map_widget=None                    # NEW
+):
+    global root, tatree, details_text, img_btn, edit_btn, del_btn
+    global save_var, total_var, devices, POLL_MS, alerts_list, map_widget
 
-def init_handlers(_root, _tatree, _details_text, _img_btn, _edit_btn, _del_btn, _save_var, _total_var, poll_ms: int = 10_000):
-    """Wire globals and load initial data."""
-    global root, tatree, details_text, img_btn, edit_btn, del_btn, save_var, total_var, devices, POLL_MS
     root, tatree, details_text = _root, _tatree, _details_text
     img_btn, edit_btn, del_btn = _img_btn, _edit_btn, _del_btn
     save_var, total_var = _save_var, _total_var
     POLL_MS = poll_ms
+    alerts_list = _alerts_list
+    map_widget = _map_widget           # NEW
 
     init_store()
     devices = load_data()
@@ -45,8 +60,106 @@ def init_handlers(_root, _tatree, _details_text, _img_btn, _edit_btn, _del_btn, 
     refresh_total_device()
     on_selection_change()
 
+    # Optional: configure row tag styles if you use colouring
+    try:
+        _configure_tree_tags()
+    except Exception:
+        pass
+
+    # Initialize the map with any existing devices
+    try:
+        update_map_markers()           # NEW
+    except Exception:
+        pass
+
 
 # ---------- helpers ----------
+
+def _compute_row_tags(d: dict) -> list[str]:
+    # Normalise values; avoid stray spaces/case mismatches.
+    conn = (d.get("connectivity") or "").strip().upper()
+    tamp = (d.get("tamper_status") or "").strip().upper()
+
+    tags: list[str] = []
+    if conn == "OFFLINE":
+        tags.append("offline")
+    if tamp == "TAMPERED":
+        tags.append("tampered")
+
+    # Precedence: the LAST tag wins for conflicting options.
+    # Ensure 'tampered' overrides 'offline' if both are present.
+    if "tampered" in tags:
+        tags = [t for t in tags if t != "tampered"] + ["tampered"]
+
+    return tags or ["normal"]
+
+
+def _configure_tree_tags():
+    # Configure visual styles for tags (call this once in init)
+    try:
+        tatree.tag_configure("normal")
+        tatree.tag_configure("offline", background="#FFEAEA", foreground="#8B0000")   # light red row
+        tatree.tag_configure("tampered", background="#FFF6CC", foreground="#6B4E00")  # light amber row
+    except Exception:
+        pass
+
+
+def _configure_tree_tags():
+    # subtle backgrounds + strong text; tweak to taste
+    tatree.tag_configure("normal")
+    tatree.tag_configure("offline", background="#FFEAEA", foreground="#8B0000")   # light red
+    tatree.tag_configure("tampered", background="#FFF6CC", foreground="#6B4E00")  # light amber
+    
+def _push_alert(msg: str):
+    """Append a red, timestamped alert to the Alerts panel."""
+    if not alerts_list:
+        return
+    ts = time.strftime("%H:%M:%S")
+    alerts_list.insert(0, f"[{ts}] {msg}")
+    try:
+        alerts_list.itemconfig(0, foreground="red")
+    except Exception:
+        pass
+    # keep size in check
+    if alerts_list.size() > 300:
+        alerts_list.delete(300, "end")
+
+def center_map_on_current_selection():
+    """Center the map on the currently selected (or last selected) device."""
+    if map_widget is None:
+        return
+
+    # Prefer current selection, else fallback to remembered iid
+    sel = tatree.selection()
+    iid = sel[0] if sel else None
+    if not iid:
+        try:
+            iid = last_selected_iid  # defined earlier in your selection-preserve patch
+        except NameError:
+            iid = None
+
+    if not iid:
+        return
+
+    dev = next((d for d in devices if d.get("id") == iid), None)
+    if dev:
+        center_map_on_device(dev, zoom=13)
+
+
+def on_notebook_tab_changed(event):
+    """
+    When user switches to the 'Map' tab, center on the selected device.
+    (Relies on the tab text being 'Map' as added in app.py.)
+    """
+    try:
+        nb = event.widget  # ttk.Notebook
+        tab_text = nb.tab(nb.select(), "text")
+        if (tab_text or "").strip().lower() == "map":
+            center_map_on_current_selection()
+    except Exception:
+        pass
+
+
 
 def _device_has_image_events(d: dict) -> bool:
     """
@@ -54,14 +167,14 @@ def _device_has_image_events(d: dict) -> bool:
     Heuristic: any event payload.type starting with 'image'.
     Falls back to device_type hint for camera-like things.
     """
-    # Check event log (most recent first)
+
     for ev in reversed(d.get("event_log", [])):
         top = ev.get("payload") or {}
         inner = top.get("payload") or {}
         t = (inner.get("type") or top.get("type") or "").lower()
         if t.startswith("image"):
             return True
-    # Fallback on device type hint
+
     dtype = (d.get("device_type") or "").lower()
     if dtype in {"camera", "uav", "drone"}:
         return True
@@ -84,7 +197,7 @@ def _grab_rtsp_snapshot(rtsp_url: str, warmup_frames: int = 12, timeout_s: int =
 
     start = time.time()
     ok, frame = False, None
-    # RTSP often needs a few reads to warm up
+
     for _ in range(max(1, warmup_frames)):
         ok, frame = cap.read()
         if ok:
@@ -116,7 +229,8 @@ def row_values(d: dict):
 
 
 def insert_row(d: dict):
-    tatree.insert("", "end", iid=d["id"], values=row_values(d))
+    tatree.insert("", "end", iid=d["id"], values=row_values(d), tags=_compute_row_tags(d))
+
 
 
 def show_details(d: Optional[dict]):
@@ -137,7 +251,7 @@ def show_details(d: Optional[dict]):
             f"Status: {d.get('connectivity','UNKNOWN')}",
             f"Last Seen: {d.get('last_seen','')}",
             f"GPS: {d.get('lat')}, {d.get('lon')}",
-            f"Stream (placeholder): {stream or '(none)'}",
+            f"Stream: {stream or '(none)'}",
             f"Notes: {d.get('notes','')}",
         ]
         details_text.insert("1.0", "\n".join(info))
@@ -149,15 +263,149 @@ def refresh_total_device():
 
 
 def refresh_device_list():
-    global devices
-    devices = load_data()
-    for iid in tatree.get_children():
-        tatree.delete(iid)
+    """Repaint table from disk while preserving selection, scroll and map center."""
+    global devices, _suppress_select_events, last_selected_iid
+
+    # remember selection we want to keep
+    current_sel = tatree.selection()
+    wanted_iid = current_sel[0] if current_sel else last_selected_iid
+
+    # remember scroll so we don't jump to the top
+    try:
+        y0, _ = tatree.yview()
+    except Exception:
+        y0 = None
+
+    # load from disk; if read fails, keep previous in-memory devices
+    try:
+        loaded = load_data()
+        if isinstance(loaded, list) and loaded is not None:
+            devices = loaded
+    except Exception:
+        pass
+
+    _suppress_select_events = True
+    try:
+        # clear & reinsert
+        tatree.delete(*tatree.get_children())
+        for d in devices:
+            if isinstance(d, dict) and d.get("id"):
+                insert_row(d)
+
+        # restore scroll
+        if y0 is not None:
+            try:
+                tatree.yview_moveto(y0)
+            except Exception:
+                pass
+
+        # restore selection if possible
+        dev = None
+        if wanted_iid and tatree.exists(wanted_iid):
+            tatree.selection_set(wanted_iid)
+            tatree.focus(wanted_iid)
+            tatree.see(wanted_iid)
+            dev = next((x for x in devices if x.get("id") == wanted_iid), None)
+
+        # update buttons/details
+        if dev:
+            show_details(dev)
+            edit_btn.config(state="normal"); del_btn.config(state="normal")
+            has_rtsp = bool(dev.get("stream_url") or DEFAULT_RTSP_URL)
+            imaging = _device_has_image_events(dev)
+            img_btn.config(state="normal" if (has_rtsp and imaging) else "disabled")
+            # keep map centered on selection AFTER markers exist
+            try:
+                center_map_on_device(dev, zoom=13)
+            except Exception:
+                pass
+        else:
+            edit_btn.config(state="disabled"); del_btn.config(state="disabled")
+            img_btn.config(state="disabled")
+            show_details(None)
+
+    finally:
+        _suppress_select_events = False
+
+    # footer count
+    refresh_total_device()
+
+
+
+def _map_available() -> bool:
+    return map_widget is not None
+
+def _marker_color_for(d: dict) -> str:
+    tamp = (d.get("tamper_status") or "").strip().upper()
+    conn = (d.get("connectivity") or "").strip().upper()
+    if tamp == "TAMPERED":
+        return "orange"
+    if conn == "OFFLINE":
+        return "red"
+    return "green"
+
+def _device_latlon(d: dict):
+    lat, lon = d.get("lat"), d.get("lon")
+    try:
+        if lat is None or lon is None:
+            return None
+        return float(lat), float(lon)
+    except Exception:
+        return None
+
+def update_map_markers(center_on_device: dict | None = None):
+    """Redraw markers without touching map center/zoom (unless centering is requested)."""
+    if not _map_available():
+        return
+
+    # Clear previous markers
+    for m in list(_map_markers):
+        try:
+            m.delete()
+        except Exception:
+            pass
+    _map_markers.clear()
+
+    # Re-add markers
     for d in devices:
-        insert_row(d)
+        ll = _device_latlon(d)
+        if not ll:
+            continue
+        lat, lon = ll
+        name = d.get("device_name") or d.get("name") or "Device"
+        color = _marker_color_for(d)
+        try:
+            marker = map_widget.set_marker(
+                lat, lon, text=name,
+                marker_color_circle=color, marker_color_outside="black"
+            )
+            _map_markers.append(marker)
+        except Exception:
+            pass
+
+    # Only recenter if explicitly asked to center on a specific device
+    if center_on_device:
+        try:
+            center_map_on_device(center_on_device, zoom=13)
+        except Exception:
+            pass
 
 
-# ---------- CRUD / actions ----------
+def center_map_on_device(d: dict, zoom: int = 13):
+    """Center the map on a specific device (if it has coordinates)."""
+    if not _map_available():
+        return
+    ll = _device_latlon(d)
+    if not ll:
+        return
+    lat, lon = ll
+    try:
+        map_widget.set_position(lat, lon)
+        map_widget.set_zoom(zoom)
+    except Exception:
+        pass
+
+# ---------- CRUD actions ----------
 
 def add_btn_clicked():
     name = simpledialog.askstring("Add a Device", "Please enter a name for your device", parent=root)
@@ -216,6 +464,7 @@ def edit_btn_clicked():
     device["device_type"] = device_type.strip() or "No device type"
 
     tatree.item(iid, values=row_values(device))
+    tatree.item(iid, tags=_compute_row_tags(device))
     show_details(device)
     save_data(devices)
 
@@ -277,6 +526,7 @@ def on_import_json_clicked():
         if len(errors) > 5:
             msg += f"\n… and {len(errors)-5} more"
     messagebox.showinfo("Import complete", msg, parent=root)
+    
 
 
 def on_refresh_api_clicked():
@@ -307,6 +557,9 @@ def on_refresh_api_clicked():
 
     if alerts:
         messagebox.showwarning("Alerts", "\n".join(alerts), parent=root)
+        for m in alerts:
+            _push_alert(m)
+
 
     msg = f"Created: {summary['created']}\nUpdated: {summary['updated']}\nNo change: {summary['no_change']}"
     if errors:
@@ -316,14 +569,7 @@ def on_refresh_api_clicked():
     messagebox.showinfo("API sync complete", msg, parent=root)
 
 
-# ---------- Snapshot (pretend “last image”) ----------
-
 def open_device_snapshot():
-    """
-    Pretend to open the device's last image:
-    - Only allowed if the device has been sending images (image/image_fragment).
-    - We then take a live snapshot from RTSP instead and open it in the browser.
-    """
     sel = tatree.selection()
     if not sel:
         messagebox.showinfo("Live snapshot", "Select a device first.", parent=root)
@@ -332,21 +578,30 @@ def open_device_snapshot():
     if not d:
         return
 
-    # Must be an “imaging” device according to recent events
     if not _device_has_image_events(d):
         messagebox.showinfo("Live snapshot", "This device has not been sending images.", parent=root)
         return
 
-    # Prefer per-device RTSP if present, else use the default
     rtsp = (d.get("stream_url") or DEFAULT_RTSP_URL or "").strip()
     if not rtsp:
         messagebox.showinfo("Live snapshot", "No RTSP URL configured and no default set.", parent=root)
         return
-    try:
-        img_path = _grab_rtsp_snapshot(rtsp)
-        webbrowser.open(Path(img_path).as_uri())
-    except Exception as e:
-        messagebox.showerror("Live snapshot", f"Failed to capture frame:\n{e}", parent=root)
+
+    img_btn.config(state="disabled")
+
+    def work():
+        try:
+            img_path = _grab_rtsp_snapshot(rtsp)
+            uri = Path(img_path).as_uri()
+            root.after(0, lambda: webbrowser.open(uri))
+        except Exception as e:
+            root.after(0, lambda: messagebox.showerror("Live snapshot", f"Failed to capture frame:\n{e}", parent=root))
+        finally:
+            root.after(0, lambda: img_btn.config(state="normal"))
+
+    import threading
+    threading.Thread(target=work, daemon=True).start()
+
 
 
 # ---------- Settings / selection / polling ----------
@@ -368,17 +623,21 @@ def open_settings():
 
 
 def on_selection_change(event=None):
+    if _suppress_select_events:
+        return
+
     selected = tatree.selection()
     if len(selected) == 1:
+        # remember selection
+        global last_selected_iid
+        last_selected_iid = selected[0]
+
         edit_btn.config(state="normal")
         del_btn.config(state="normal")
         iid = selected[0]
         device = next((d for d in devices if d.get("id") == iid), None)
         show_details(device)
 
-        # Enable the “last image” (snapshot) button only if:
-        # 1) the device has image events AND
-        # 2) we have an RTSP URL (device-level or default)
         has_rtsp = bool(device and (device.get("stream_url") or DEFAULT_RTSP_URL))
         imaging = bool(device and _device_has_image_events(device))
         img_btn.config(state="normal" if (has_rtsp and imaging) else "disabled")
@@ -389,27 +648,58 @@ def on_selection_change(event=None):
         show_details(None)
 
 
+
 def poll_api():
+    alerts = []
     try:
         payloads = fetch_payloads()
         for p in payloads:
-            upsert_device_from_api(p)
+            try:
+                res = upsert_device_from_api(p)
+
+                # Only alert on *changes* to negative states
+                if res.get("tamper_changed") and (res.get("tamper") == "TAMPERED"):
+                    model = p.get("model", "?"); serial = p.get("serial", "?")
+                    alerts.append(f"{model} {serial}: TAMPERED")
+
+                if res.get("connectivity_changed") and (res.get("connectivity") == "OFFLINE"):
+                    model = p.get("model", "?"); serial = p.get("serial", "?")
+                    alerts.append(f"{model} {serial}: OFFLINE")
+
+            except Exception:
+                # Continue polling other payloads
+                pass
+
+        # Refresh table so state colors/tags (if you added them) remain accurate
         refresh_device_list()
+
+
     except Exception:
+        # swallow transient API errors — panel is for device alerts, not network noise
         pass
     finally:
+        if alerts:
+            try:
+                root.bell()
+            except Exception:
+                pass
+            msg = "\n".join(alerts[:10]) + (f"\n…and {len(alerts)-10} more" if len(alerts) > 10 else "")
+            messagebox.showwarning("Alerts", msg, parent=root)
+
+        # Single, safe repaint (preserves selection & map center)
+        refresh_device_list()
+
         root.after(POLL_MS, poll_api)
+
+
+        root.after(POLL_MS, poll_api)
+        # Example if you stop reinserting:
+    for d in devices:
+        if tatree.exists(d["id"]):
+            tatree.item(d["id"], values=row_values(d), tags=_compute_row_tags(d))
 
 
 def start_polling(ms: int):
     global POLL_MS
     POLL_MS = ms
     root.after(POLL_MS, poll_api)
-
-
-def _auth_header():
-    tok = (load_config().get("api_token") or "").strip()
-    if not tok:
-        return {}
-    return {"Authorization": tok if tok.lower().startswith("bearer ")
-            else f"Bearer {tok}"}

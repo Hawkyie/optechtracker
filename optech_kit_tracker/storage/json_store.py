@@ -1,7 +1,8 @@
 from pathlib import Path
-import json
 from typing import Union
 from models.device import create_device_from_api, refresh_device_from_api
+import os, tempfile, shutil, json
+from json import JSONDecodeError
 
 DATA_FILE = Path(__file__).parent.joinpath("devices.json").resolve()
 
@@ -14,14 +15,33 @@ def load_data():
     if not DATA_FILE.exists():
         return []
     try:
-        data = json.loads(DATA_FILE.read_text(encoding="utf-8"))
-        return data if isinstance(data, list) else []
+        return json.loads(DATA_FILE.read_text(encoding="utf-8")) or []
+    except JSONDecodeError:
+        # back up the corrupt file once
+        bad = DATA_FILE.with_suffix(".json.corrupt")
+        try:
+            shutil.copy2(DATA_FILE, bad)
+        except Exception:
+            pass
+        return []
     except Exception:
         return []
 
 def save_data(data):
     DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
-    DATA_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp_fd, tmp_path = tempfile.mkstemp(dir=str(DATA_FILE.parent), prefix=DATA_FILE.name, suffix=".tmp")
+    try:
+        with os.fdopen(tmp_fd, "w", encoding="utf-8") as fh:
+            json.dump(data, fh, ensure_ascii=False, indent=2)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp_path, DATA_FILE)
+    finally:
+        try:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+        except Exception:
+            pass
 
 def import_device_json(path: Union[str, Path]):
     data = json.loads(Path(path).read_text(encoding="utf-8"))
