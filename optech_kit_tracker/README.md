@@ -51,7 +51,7 @@ To start,
 
 cd C:\Users\charl\Desktop\Projects\optechtracker\optech_kit_tracker
 
-py -m desktop.app
+py -m app
 
 1. Chew pain relief from the headache python gives you,
 2. Test before you push.
@@ -59,6 +59,7 @@ py -m desktop.app
 Wonky success, remember who you fight for.
 
 https://imgur.com/gallery/helfr-4VgzGKG
+
 
 
 
