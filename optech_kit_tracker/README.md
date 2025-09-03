@@ -5,7 +5,7 @@ It provides a simple interface to view device status, live updates, maps, and al
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Device Management**  
   - Add, edit, and remove devices  
@@ -60,3 +60,4 @@ py -m desktop.app
 Wonky success, remember who you fight for.
 
 https://imgur.com/gallery/helfr-4VgzGKG
+
