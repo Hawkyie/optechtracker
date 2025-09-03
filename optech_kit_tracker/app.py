@@ -37,11 +37,13 @@ def main():
     imp_btn  = ttk.Button(btn_row, text="Import JSON", command=on_import_json_clicked, cursor="hand2")
     api_btn  = ttk.Button(btn_row, text="Refresh from API", command=on_refresh_api_clicked, cursor="hand2")
     img_btn = ttk.Button(btn_row,
-                     text="Live Snapshot",
-                     command=handlers.open_device_snapshot,
-                     state=tk.DISABLED,
-                     cursor="hand2")
+                         text="Live Snapshot",
+                         command=handlers.open_device_snapshot,   # <- call the new handler
+                         state=tk.DISABLED,
+                         cursor="hand2",
+                         )
     img_btn.pack(side=tk.LEFT, padx=16, pady=6)
+
 
     
     for b in (add_btn, edit_btn, del_btn, save_btn, imp_btn, api_btn, img_btn):

@@ -34,7 +34,7 @@ total_var = None
 devices = []
 POLL_MS = 10_000
 
-RTSP_URL = os.getenv("OPTECH_RTSP_URL", "rtsp://192.168.8.185:8554/cam")
+DEFAULT_RTSP_URL = os.getenv("OPTECH_RTSP_URL", "rtsp://192.168.8.185:8554/cam")
 
 
 def init_handlers(_root, _tatree, _details_text, _img_btn, _edit_btn, _del_btn, _save_var, _total_var, poll_ms: int = 10_000):
@@ -52,6 +52,42 @@ def init_handlers(_root, _tatree, _details_text, _img_btn, _edit_btn, _del_btn, 
     _image_proxy.start()
 
 # ---------- helpers ----------
+
+def _grab_rtsp_snapshot(rtsp_url: str, warmup_frames: int = 12, timeout_s: int = 10) -> Path:
+    """
+    Grab a single frame from an RTSP stream using OpenCV (FFmpeg backend).
+    Returns a temp JPG path or raises RuntimeError with a clear message.
+    """
+    try:
+        import cv2
+    except ImportError:
+        raise RuntimeError("OpenCV (cv2) is not installed. pip install opencv-python")
+    
+    cap = cv2.VideoCapture(rtsp_url, cv2.CAP_FFMPEG)
+    if not cap.isOpened():
+        raise RuntimeError("OpenCV could not open RTSP stream (check URL/credentials/camera)")
+
+    start = time.time()
+    ok, frame = False, None
+    # RTSP usually needs a few reads to warm up
+    for _ in range(max(1, warmup_frames)):
+        ok, frame = cap.read()
+        if ok:
+            break
+        if time.time() - start > timeout_s:
+            break
+    cap.release()
+
+    if not ok or frame is None:
+        raise RuntimeError("Couldn't read a frame from RTSP (check codec/network)")
+
+    ok, buf = cv2.imencode(".jpg", frame, [int(cv2.IMWRITE_JPEG_QUALITY), 90])
+    if not ok:
+        raise RuntimeError("Failed to encode JPG")
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp:
+        tmp.write(buf.tobytes())
+        return Path(tmp.name)
 class _ImageProxyHandler(BaseHTTPRequestHandler):
     def log_message(self, *args, **kwargs):  # quiet logs
         pass
@@ -330,69 +366,32 @@ def _try_fetch_image(u: str):
         return None, None
 
 
-def open_last_image_for_selected():
+# still in handlers.py
+import webbrowser
+from tkinter import messagebox
+
+def open_device_snapshot():
     sel = tatree.selection()
     if not sel:
-        messagebox.showinfo("Last image", "Select a device first.", parent=root); return
+        messagebox.showinfo("Live snapshot", "Select a device first.", parent=root)
+        return
     d = next((x for x in devices if x.get("id") == sel[0]), None)
-    if not d: 
+    if not d:
         return
 
-    # Prefer a direct URL; else fallback to image ID
-    ref = d.get("last_image_url") or d.get("last_image_id")
-    if not ref:
-        messagebox.showinfo("Last image", "No image reference for this device yet.", parent=root); return
+    # Prefer per-device RTSP if present, else use the default
+    rtsp = (d.get("stream_url") or DEFAULT_RTSP_URL or "").strip()
+    if not rtsp:
+        messagebox.showinfo("Live snapshot",
+                            "No RTSP URL configured and no default set.",
+                            parent=root)
+        return
+    try:
+        img_path = _grab_rtsp_snapshot(rtsp)
+        webbrowser.open(Path(img_path).as_uri())
+    except Exception as e:
+        messagebox.showerror("Live snapshot", f"Failed to capture frame:\n{e}", parent=root)
 
-    # First, build a base URL from your helper (may be a direct URL or /images/<id>)
-    base = build_media_url(ref)
-    if not base:
-        messagebox.showinfo("Last image", "Couldn't build an image URL for this device.", parent=root); return
-
-    # Prepare candidate “raw image” URLs to try, covering common patterns.
-    candidates = []
-    # 1) if base already looks like a full URL, try typical raw variations
-    if base.startswith(("http://", "https://")):
-        candidates.append(base)
-        if not base.endswith("/raw"):
-            candidates += [base.rstrip("/") + "/raw",
-                           base + "?raw=1",
-                           base + "?download=1"]
-        # also try common alt roots
-        for repl in (("/images/", "/media/"), ("/image/", "/media/"), ("/img/", "/media/")):
-            if repl[0] in base:
-                alt = base.replace(repl[0], repl[1])
-                candidates += [alt, alt.rstrip("/") + "/raw", alt + "?download=1"]
-    else:
-        # base is not a URL – shouldn’t happen because build_media_url returns a URL
-        pass
-
-    # De-dup while preserving order
-    seen = set(); cand = []
-    for u in candidates:
-        if u not in seen:
-            seen.add(u); cand.append(u)
-
-    # Try each candidate until we get image bytes
-    for url in cand:
-        blob, ext = _try_fetch_image(url)
-        if blob:
-            # write to a temp file and open in default viewer (browser will show it)
-            with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
-                tmp.write(blob)
-                tmp_path = Path(tmp.name)
-            webbrowser.open(tmp_path.as_uri())
-            return
-
-    # If we get here, every candidate returned JSON/HTML or error
-    show = "\n".join(cand[:3])
-    messagebox.showinfo(
-        "Last image",
-        "The endpoint returned JSON/metadata instead of image bytes.\n\n"
-        "Tried (first three):\n" + show + "\n\n"
-        "Ask the API for a raw-image path (e.g. /images/<id>/raw or ?download=1), "
-        "or expose a direct URL in payload.url/thumbnail_url.",
-        parent=root
-    )
 
 
 
@@ -417,13 +416,14 @@ def on_selection_change(event=None):
         iid = selected[0]
         device = next((d for d in devices if d.get("id") == iid), None)
         show_details(device)
-        has_img = bool(device and device.get("last_image_url"))
-        img_btn.config(state="normal" if has_img else "disabled")
+        has_rtsp = bool(device and (device.get("stream_url") or DEFAULT_RTSP_URL))
+        img_btn.config(state="normal" if has_rtsp else "disabled")
     else:
         edit_btn.config(state="disabled")
         del_btn.config(state="disabled")
         img_btn.config(state="disabled")
         show_details(None)
+
 
 def poll_api():
     try:
