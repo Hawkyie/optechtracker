@@ -1,25 +1,18 @@
+import os
+import time
+import tempfile
 import webbrowser
-from tkinter import messagebox, simpledialog, filedialog
+from pathlib import Path
 from typing import Optional
+from tkinter import messagebox, simpledialog, filedialog
 
-from storage.json_store import init_store, load_data, save_data, import_device_json, upsert_device_from_api
+from storage.json_store import (
+    init_store, load_data, save_data, import_device_json, upsert_device_from_api
+)
 from models.device import create_device
-from services.api_client import fetch_payloads, build_media_url
+from services.api_client import fetch_payloads
 from app_config import load_config, save_config
 import utils
-
-# Import for Load Last Image
-import socket, threading
-from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
-from urllib.parse import quote, unquote
-import requests
-
-import tempfile
-
-import os, time, shutil, subprocess, tempfile, mimetypes
-from pathlib import Path
-
-
 
 # --- module "globals" ---
 root = None
@@ -34,10 +27,12 @@ total_var = None
 devices = []
 POLL_MS = 10_000
 
+# Default RTSP used when device.stream_url is not set
 DEFAULT_RTSP_URL = os.getenv("OPTECH_RTSP_URL", "rtsp://192.168.8.185:8554/cam")
 
 
 def init_handlers(_root, _tatree, _details_text, _img_btn, _edit_btn, _del_btn, _save_var, _total_var, poll_ms: int = 10_000):
+    """Wire globals and load initial data."""
     global root, tatree, details_text, img_btn, edit_btn, del_btn, save_var, total_var, devices, POLL_MS
     root, tatree, details_text = _root, _tatree, _details_text
     img_btn, edit_btn, del_btn = _img_btn, _edit_btn, _del_btn
@@ -49,9 +44,29 @@ def init_handlers(_root, _tatree, _details_text, _img_btn, _edit_btn, _del_btn, 
     refresh_device_list()
     refresh_total_device()
     on_selection_change()
-    _image_proxy.start()
+
 
 # ---------- helpers ----------
+
+def _device_has_image_events(d: dict) -> bool:
+    """
+    Returns True if recent events/payloads look like the device is providing images.
+    Heuristic: any event payload.type starting with 'image'.
+    Falls back to device_type hint for camera-like things.
+    """
+    # Check event log (most recent first)
+    for ev in reversed(d.get("event_log", [])):
+        top = ev.get("payload") or {}
+        inner = top.get("payload") or {}
+        t = (inner.get("type") or top.get("type") or "").lower()
+        if t.startswith("image"):
+            return True
+    # Fallback on device type hint
+    dtype = (d.get("device_type") or "").lower()
+    if dtype in {"camera", "uav", "drone"}:
+        return True
+    return False
+
 
 def _grab_rtsp_snapshot(rtsp_url: str, warmup_frames: int = 12, timeout_s: int = 10) -> Path:
     """
@@ -61,15 +76,15 @@ def _grab_rtsp_snapshot(rtsp_url: str, warmup_frames: int = 12, timeout_s: int =
     try:
         import cv2
     except ImportError:
-        raise RuntimeError("OpenCV (cv2) is not installed. pip install opencv-python")
-    
+        raise RuntimeError("OpenCV (cv2) is not installed. Run: pip install opencv-python")
+
     cap = cv2.VideoCapture(rtsp_url, cv2.CAP_FFMPEG)
     if not cap.isOpened():
         raise RuntimeError("OpenCV could not open RTSP stream (check URL/credentials/camera)")
 
     start = time.time()
     ok, frame = False, None
-    # RTSP usually needs a few reads to warm up
+    # RTSP often needs a few reads to warm up
     for _ in range(max(1, warmup_frames)):
         ok, frame = cap.read()
         if ok:
@@ -88,68 +103,6 @@ def _grab_rtsp_snapshot(rtsp_url: str, warmup_frames: int = 12, timeout_s: int =
     with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp:
         tmp.write(buf.tobytes())
         return Path(tmp.name)
-class _ImageProxyHandler(BaseHTTPRequestHandler):
-    def log_message(self, *args, **kwargs):  # quiet logs
-        pass
-
-    def do_GET(self):
-        path = unquote(self.path or "")
-        if not path.startswith("/img/"):
-            self.send_error(404); return
-
-        image_id = path[len("/img/"):]  # can be an ID or full URL
-        url = build_media_url(image_id)
-        if not url:
-            self.send_error(400, "Cannot resolve image URL"); return
-
-        try:
-            r = requests.get(url, headers=_auth_header(), stream=True, timeout=20)
-        except Exception as e:
-            self.send_error(502, f"Upstream error: {e}"); return
-
-        if not r.ok:
-            self.send_error(r.status_code, r.text[:200]); return
-
-        ctype = r.headers.get("content-type", "application/octet-stream")
-        self.send_response(200)
-        self.send_header("Content-Type", ctype)
-        self.send_header("Cache-Control", "no-store")
-        self.end_headers()
-
-        for chunk in r.iter_content(64 * 1024):
-            if chunk:
-                self.wfile.write(chunk)
-
-class _ImageProxy:
-    def __init__(self):
-        self.httpd = None
-        self.port = None
-        self.thread = None
-
-    def start(self):
-        if self.httpd:
-            return
-        s = socket.socket()
-        s.bind(("127.0.0.1", 0))          # OS picks a free port
-        _, self.port = s.getsockname()
-        s.close()
-
-        self.httpd = ThreadingHTTPServer(("127.0.0.1", self.port), _ImageProxyHandler)
-        self.thread = threading.Thread(target=self.httpd.serve_forever, daemon=True)
-        self.thread.start()
-
-    def base_url(self):
-        return f"http://127.0.0.1:{self.port}" if self.port else None
-
-    def stop(self):
-        if self.httpd:
-            self.httpd.shutdown()
-            self.httpd.server_close()
-            self.httpd = None
-            self.thread = None
-            self.port = None
-
-_image_proxy = _ImageProxy()
 
 
 def row_values(d: dict):
@@ -161,8 +114,10 @@ def row_values(d: dict):
     last_seen = d.get("last_seen") or ""
     return (name, dtype, batt, tamper, status, last_seen)
 
+
 def insert_row(d: dict):
     tatree.insert("", "end", iid=d["id"], values=row_values(d))
+
 
 def show_details(d: Optional[dict]):
     details_text.configure(state="normal")
@@ -170,6 +125,7 @@ def show_details(d: Optional[dict]):
     if not d:
         details_text.insert("1.0", "Select a device to see details.")
     else:
+        stream = d.get("stream_url") or DEFAULT_RTSP_URL
         info = [
             f"Name: {d.get('device_name') or d.get('name')}",
             f"Type: {d.get('device_type','')}",
@@ -181,14 +137,16 @@ def show_details(d: Optional[dict]):
             f"Status: {d.get('connectivity','UNKNOWN')}",
             f"Last Seen: {d.get('last_seen','')}",
             f"GPS: {d.get('lat')}, {d.get('lon')}",
-            f"Last Image: {d.get('last_image_url','')}",
+            f"Stream (placeholder): {stream or '(none)'}",
             f"Notes: {d.get('notes','')}",
         ]
         details_text.insert("1.0", "\n".join(info))
     details_text.configure(state="disabled")
 
+
 def refresh_total_device():
     total_var.set(f"Total Devices: {len(devices)}")
+
 
 def refresh_device_list():
     global devices
@@ -198,16 +156,21 @@ def refresh_device_list():
     for d in devices:
         insert_row(d)
 
+
+# ---------- CRUD / actions ----------
+
 def add_btn_clicked():
     name = simpledialog.askstring("Add a Device", "Please enter a name for your device", parent=root)
-    if name is None: return
+    if name is None:
+        return
     name = name.strip()
     if not name:
         messagebox.showerror("Add Device", "Please enter a name.", parent=root)
         return
 
     device_type = simpledialog.askstring("Device Type", "Please enter a type", parent=root)
-    if device_type is None: return
+    if device_type is None:
+        return
     device_type = (device_type or "").strip() or "No type"
 
     existing_ids = {d.get("id") for d in devices}
@@ -225,45 +188,57 @@ def add_btn_clicked():
     show_details(d)
     refresh_total_device()
 
+
 def edit_btn_clicked():
     selected_items = tatree.selection()
     if len(selected_items) != 1:
-        messagebox.showinfo("Too many", "Greedy", parent=root); return
+        messagebox.showinfo("Too many", "Greedy", parent=root)
+        return
     iid = selected_items[0]
     device = next((d for d in devices if d.get("id") == iid), None)
-    if not device: return
+    if not device:
+        return
 
     name = simpledialog.askstring("Edit Device", "Please specify the Device name", initialvalue=device.get("name", ""), parent=root)
-    if name is None: return
+    if name is None:
+        return
     name = name.strip()
     if not name:
-        messagebox.showerror("Edit Device", "Please enter a name.", parent=root); return
-    device["name"] = name; device["device_name"] = name
+        messagebox.showerror("Edit Device", "Please enter a name.", parent=root)
+        return
+    device["name"] = name
+    device["device_name"] = name
     tatree.item(iid, values=row_values(device))
 
     device_type = simpledialog.askstring("Device Type", "Please enter the device type", initialvalue=device.get("device_type", ""), parent=root)
-    if device_type is None: return
+    if device_type is None:
+        return
     device["device_type"] = device_type.strip() or "No device type"
 
     tatree.item(iid, values=row_values(device))
     show_details(device)
     save_data(devices)
 
+
 def del_btn_clicked():
     selected_items = tatree.selection()
     if len(selected_items) != 1:
-        messagebox.showinfo("We are showing you this", "Select one device.", parent=root); return
+        messagebox.showinfo("We are showing you this", "Select one device.", parent=root)
+        return
     iid = selected_items[0]
     device = next((d for d in devices if d.get("id") == iid), None)
-    if not device: return
+    if not device:
+        return
     ok = messagebox.askyesno("Delete", "Delete this device?", parent=root)
-    if not ok: return
+    if not ok:
+        return
 
     devices.remove(device)
     tatree.delete(iid)
     refresh_total_device()
     on_selection_change()
     save_data(devices)
+
 
 def save_btn_clicked():
     try:
@@ -276,12 +251,14 @@ def save_btn_clicked():
         save_var.set("Saved just now")
         root.after(8_000, lambda: save_var.set(""))
 
+
 def on_import_json_clicked():
     paths = filedialog.askopenfilenames(
         title="Import Device JSON…",
         filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
     )
-    if not paths: return
+    if not paths:
+        return
 
     summary = {"created": 0, "updated": 0, "no_change": 0}
     errors = []
@@ -300,6 +277,7 @@ def on_import_json_clicked():
         if len(errors) > 5:
             msg += f"\n… and {len(errors)-5} more"
     messagebox.showinfo("Import complete", msg, parent=root)
+
 
 def on_refresh_api_clicked():
     try:
@@ -337,40 +315,15 @@ def on_refresh_api_clicked():
             msg += f"\n… and {len(errors)-5} more"
     messagebox.showinfo("API sync complete", msg, parent=root)
 
-def _try_fetch_image(u: str):
-    """
-    Try to GET an image from u with Authorization.
-    Returns (bytes, suggested_ext) or (None, None).
-    """
-    try:
-        r = requests.get(u, headers=_auth_header(), stream=True, timeout=25)
-        if not r.ok:
-            return None, None
-        ctype = (r.headers.get("content-type") or "").lower()
-        # stream to memory (small images) – keeps code simple
-        blob = b"".join(chunk for chunk in r.iter_content(64 * 1024) if chunk)
-        # If server forgot content-type, sniff a few common headers
-        if not ctype.startswith("image/"):
-            sig = blob[:8]
-            if sig.startswith(b"\x89PNG"):
-                ctype = "image/png"
-            elif sig[:3] == b"\xff\xd8\xff":
-                ctype = "image/jpeg"
-            elif sig[:2] == b"BM":
-                ctype = "image/bmp"
-            else:
-                return None, None
-        ext = (mimetypes.guess_extension(ctype) or ".jpg")
-        return blob, ext
-    except Exception:
-        return None, None
 
-
-# still in handlers.py
-import webbrowser
-from tkinter import messagebox
+# ---------- Snapshot (pretend “last image”) ----------
 
 def open_device_snapshot():
+    """
+    Pretend to open the device's last image:
+    - Only allowed if the device has been sending images (image/image_fragment).
+    - We then take a live snapshot from RTSP instead and open it in the browser.
+    """
     sel = tatree.selection()
     if not sel:
         messagebox.showinfo("Live snapshot", "Select a device first.", parent=root)
@@ -379,12 +332,15 @@ def open_device_snapshot():
     if not d:
         return
 
+    # Must be an “imaging” device according to recent events
+    if not _device_has_image_events(d):
+        messagebox.showinfo("Live snapshot", "This device has not been sending images.", parent=root)
+        return
+
     # Prefer per-device RTSP if present, else use the default
     rtsp = (d.get("stream_url") or DEFAULT_RTSP_URL or "").strip()
     if not rtsp:
-        messagebox.showinfo("Live snapshot",
-                            "No RTSP URL configured and no default set.",
-                            parent=root)
+        messagebox.showinfo("Live snapshot", "No RTSP URL configured and no default set.", parent=root)
         return
     try:
         img_path = _grab_rtsp_snapshot(rtsp)
@@ -393,20 +349,23 @@ def open_device_snapshot():
         messagebox.showerror("Live snapshot", f"Failed to capture frame:\n{e}", parent=root)
 
 
-
-
+# ---------- Settings / selection / polling ----------
 
 def open_settings():
     cfg = load_config()
     api = simpledialog.askstring("Settings", "API URL", initialvalue=cfg.get("api_url",""), parent=root)
-    if api is None: return
+    if api is None:
+        return
     tok = simpledialog.askstring("Settings", "API Token (leave blank if none)", initialvalue=cfg.get("api_token",""), parent=root)
-    if tok is None: return
+    if tok is None:
+        return
     media = simpledialog.askstring("Settings", "Media Base URL (optional, for image IDs)", initialvalue=cfg.get("media_base",""), parent=root)
-    if media is None: return
+    if media is None:
+        return
     cfg.update({"api_url": api.strip(), "api_token": tok.strip(), "media_base": media.strip()})
     save_config(cfg)
     messagebox.showinfo("Settings", "Saved. Use Refresh from API to apply.", parent=root)
+
 
 def on_selection_change(event=None):
     selected = tatree.selection()
@@ -416,8 +375,13 @@ def on_selection_change(event=None):
         iid = selected[0]
         device = next((d for d in devices if d.get("id") == iid), None)
         show_details(device)
+
+        # Enable the “last image” (snapshot) button only if:
+        # 1) the device has image events AND
+        # 2) we have an RTSP URL (device-level or default)
         has_rtsp = bool(device and (device.get("stream_url") or DEFAULT_RTSP_URL))
-        img_btn.config(state="normal" if has_rtsp else "disabled")
+        imaging = bool(device and _device_has_image_events(device))
+        img_btn.config(state="normal" if (has_rtsp and imaging) else "disabled")
     else:
         edit_btn.config(state="disabled")
         del_btn.config(state="disabled")
@@ -436,10 +400,12 @@ def poll_api():
     finally:
         root.after(POLL_MS, poll_api)
 
+
 def start_polling(ms: int):
     global POLL_MS
     POLL_MS = ms
     root.after(POLL_MS, poll_api)
+
 
 def _auth_header():
     tok = (load_config().get("api_token") or "").strip()

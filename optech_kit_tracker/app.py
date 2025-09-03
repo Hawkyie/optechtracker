@@ -3,10 +3,11 @@ from tkinter import ttk
 import tkinter.font as tkfont
 
 from gui.handlers import (
-    init_handlers, add_btn_clicked, edit_btn_clicked, del_btn_clicked, save_btn_clicked,
-    on_import_json_clicked, on_refresh_api_clicked, open_last_image_for_selected,
+    init_handlers, add_btn_clicked, edit_btn_clicked, del_btn_clicked,
+    save_btn_clicked, on_import_json_clicked, on_refresh_api_clicked,
     on_selection_change, start_polling
 )
+
 from gui import handlers
 
 def main():
@@ -38,7 +39,7 @@ def main():
     api_btn  = ttk.Button(btn_row, text="Refresh from API", command=on_refresh_api_clicked, cursor="hand2")
     img_btn = ttk.Button(btn_row,
                          text="Live Snapshot",
-                         command=handlers.open_device_snapshot,   # <- call the new handler
+                         command=handlers.open_device_snapshot,
                          state=tk.DISABLED,
                          cursor="hand2",
                          )

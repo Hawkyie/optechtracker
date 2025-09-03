@@ -50,8 +50,6 @@ def create_device_from_api(data: dict):
         "event_log": [{"ts": data.get("timestamp"), "type": "IMPORT", "payload": data}]
     }
 
-import utils
-
 def refresh_device_from_api(device: dict, payload: dict) -> dict:
     """
     Update a device in-place from an API payload.
