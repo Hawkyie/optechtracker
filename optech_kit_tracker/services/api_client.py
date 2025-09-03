@@ -4,7 +4,13 @@ import requests
 from app_config import load_config
 
 API_URL   = os.getenv("OPTECH_API_URL", "https://kit-tracker.peacemosquitto.workers.dev")
-API_TOKEN = os.getenv("OPTECH_API_TOKEN", "")
+API_TOKEN = os.getenv("OPTECH_API_TOKEN", "Bearer 63T-nAch05-p3W5-lIn60t")
+
+MEDIA_BASE = os.getenv("OPTECH_MEDIA_BASE", "").rstrip("/")
+if not MEDIA_BASE:
+    # If your server serves images at a different path (e.g. /media/<id>),
+    # change "/images" to the right one.
+    MEDIA_BASE = f"{API_URL.rstrip('/')}/images"
 
 def _auth_header():
     cfg_token = (load_config().get("api_token") or "").strip()
@@ -47,26 +53,52 @@ import os
 API_URL   = os.getenv("OPTECH_API_URL", "https://kit-tracker.peacemosquitto.workers.dev")
 
 def build_media_url(image_id_or_url: str) -> str | None:
-    """
-    Resolve an image ref to a URL, without verifying it up-front.
-    Priority:
-      1) If ref is already a full URL -> return as-is.
-      2) If Settings has Media Base URL -> <media_base>/<id>.
-      3) Fallback guess under the API URL -> <api>/media/<id>.
-    """
     if not image_id_or_url:
         return None
-
     s = str(image_id_or_url).strip()
     if s.startswith(("http://", "https://")):
         return s
+    # Use the code/default media base
+    return f"{MEDIA_BASE}/{s}"
 
-    cfg = load_config()
+# services/api_client.py
+import os
+from app_config import load_config
+
+API_URL   = os.getenv("OPTECH_API_URL", "https://kit-tracker.peacemosquitto.workers.dev")
+
+def image_url_candidates(image_id_or_url: str) -> list[str]:
+    """
+    Return a list of plausible URLs (most specific first) for a given image ref.
+    If ref is already a full URL -> try that only.
+    Otherwise, build candidates against the configured media base or API base.
+    """
+    if not image_id_or_url:
+        return []
+
+    s = str(image_id_or_url).strip()
+    if s.startswith(("http://", "https://")):
+        return [s]
+
+    cfg       = load_config()
     media_base = (cfg.get("media_base") or "").rstrip("/")
-    if media_base:
-        return f"{media_base}/{s}"
+    api_base   = (cfg.get("api_url") or API_URL).rstrip("/")
+    base = media_base or api_base
 
-    api_base = (cfg.get("api_url") or API_URL).rstrip("/")
-    # If your backend uses a different path (e.g., /images/<id>), change "media" below:
-    return f"{api_base}/media/{s}"
+    # Common server patterns — put the routes you expect near the top
+    patterns = [
+        "{base}/images/{id}/raw",
+        "{base}/images/{id}/download",
+        "{base}/images/{id}/content",
+        "{base}/images/{id}",
+        "{base}/image/{id}/raw",
+        "{base}/image/{id}",
+        "{base}/media/{id}/raw",
+        "{base}/media/{id}",
+        "{base}/img/{id}",
+        "{base}/payloads/{id}/image",
+    ]
+
+    return [p.format(base=base.rstrip("/"), id=s) for p in patterns]
+
 

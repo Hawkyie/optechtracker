@@ -14,6 +14,7 @@ from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import quote, unquote
 import requests
 
+import tempfile
 
 
 # --- module "globals" ---
@@ -42,8 +43,6 @@ def init_handlers(_root, _tatree, _details_text, _img_btn, _edit_btn, _del_btn, 
     refresh_total_device()
     on_selection_change()
     _image_proxy.start()
-    
-
 
 # ---------- helpers ----------
 class _ImageProxyHandler(BaseHTTPRequestHandler):
@@ -295,25 +294,99 @@ def on_refresh_api_clicked():
             msg += f"\n… and {len(errors)-5} more"
     messagebox.showinfo("API sync complete", msg, parent=root)
 
+def _try_fetch_image(u: str):
+    """
+    Try to GET an image from u with Authorization.
+    Returns (bytes, suggested_ext) or (None, None).
+    """
+    try:
+        r = requests.get(u, headers=_auth_header(), stream=True, timeout=25)
+        if not r.ok:
+            return None, None
+        ctype = (r.headers.get("content-type") or "").lower()
+        # stream to memory (small images) – keeps code simple
+        blob = b"".join(chunk for chunk in r.iter_content(64 * 1024) if chunk)
+        # If server forgot content-type, sniff a few common headers
+        if not ctype.startswith("image/"):
+            sig = blob[:8]
+            if sig.startswith(b"\x89PNG"):
+                ctype = "image/png"
+            elif sig[:3] == b"\xff\xd8\xff":
+                ctype = "image/jpeg"
+            elif sig[:2] == b"BM":
+                ctype = "image/bmp"
+            else:
+                return None, None
+        ext = (mimetypes.guess_extension(ctype) or ".jpg")
+        return blob, ext
+    except Exception:
+        return None, None
+
+
 def open_last_image_for_selected():
     sel = tatree.selection()
     if not sel:
-        messagebox.showinfo("Last image", "Select a device first.", parent=root)
-        return
-
+        messagebox.showinfo("Last image", "Select a device first.", parent=root); return
     d = next((x for x in devices if x.get("id") == sel[0]), None)
-    if not d:
+    if not d: 
         return
 
-    ref = d.get("last_image_url")
+    # Prefer a direct URL; else fallback to image ID
+    ref = d.get("last_image_url") or d.get("last_image_id")
     if not ref:
-        messagebox.showinfo("Last image", "No image recorded for this device yet.", parent=root)
-        return
+        messagebox.showinfo("Last image", "No image reference for this device yet.", parent=root); return
 
-    # Always use the local proxy so the Authorization header is attached.
-    _image_proxy.start()  # no-op if already running
-    local_url = f"{_image_proxy.base_url()}/img/{quote(str(ref))}"
-    webbrowser.open(local_url)
+    # First, build a base URL from your helper (may be a direct URL or /images/<id>)
+    base = build_media_url(ref)
+    if not base:
+        messagebox.showinfo("Last image", "Couldn't build an image URL for this device.", parent=root); return
+
+    # Prepare candidate “raw image” URLs to try, covering common patterns.
+    candidates = []
+    # 1) if base already looks like a full URL, try typical raw variations
+    if base.startswith(("http://", "https://")):
+        candidates.append(base)
+        if not base.endswith("/raw"):
+            candidates += [base.rstrip("/") + "/raw",
+                           base + "?raw=1",
+                           base + "?download=1"]
+        # also try common alt roots
+        for repl in (("/images/", "/media/"), ("/image/", "/media/"), ("/img/", "/media/")):
+            if repl[0] in base:
+                alt = base.replace(repl[0], repl[1])
+                candidates += [alt, alt.rstrip("/") + "/raw", alt + "?download=1"]
+    else:
+        # base is not a URL – shouldn’t happen because build_media_url returns a URL
+        pass
+
+    # De-dup while preserving order
+    seen = set(); cand = []
+    for u in candidates:
+        if u not in seen:
+            seen.add(u); cand.append(u)
+
+    # Try each candidate until we get image bytes
+    for url in cand:
+        blob, ext = _try_fetch_image(url)
+        if blob:
+            # write to a temp file and open in default viewer (browser will show it)
+            with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
+                tmp.write(blob)
+                tmp_path = Path(tmp.name)
+            webbrowser.open(tmp_path.as_uri())
+            return
+
+    # If we get here, every candidate returned JSON/HTML or error
+    show = "\n".join(cand[:3])
+    messagebox.showinfo(
+        "Last image",
+        "The endpoint returned JSON/metadata instead of image bytes.\n\n"
+        "Tried (first three):\n" + show + "\n\n"
+        "Ask the API for a raw-image path (e.g. /images/<id>/raw or ?download=1), "
+        "or expose a direct URL in payload.url/thumbnail_url.",
+        parent=root
+    )
+
 
 
 

@@ -119,14 +119,21 @@ def refresh_device_from_api(device: dict, payload: dict) -> dict:
         device["connectivity"] = conn
         changed_fields.append("connectivity")
 
-    # ---- Image payload -> last_image_url
     pl = payload.get("payload") or {}
     ptype = (pl.get("type") or "").lower()
-    if ptype in {"image", "image_capture", "image_fragment"}:
-        img_ref = pl.get("url") or pl.get("thumbnail_url") or pl.get("id")
-        if img_ref and img_ref != device.get("last_image_url"):
-            device["last_image_url"] = img_ref
+
+    # If API gives a real URL, prefer it
+    direct_url = pl.get("url") or pl.get("thumbnail_url")
+    if isinstance(direct_url, str) and direct_url.startswith(("http://", "https://")):
+        if direct_url != device.get("last_image_url"):
+            device["last_image_url"] = direct_url
             changed_fields.append("last_image_url")
+
+    # Always capture an image-id if present (for fragments)
+    img_id = pl.get("id")
+    if img_id and img_id != device.get("last_image_id"):
+        device["last_image_id"] = img_id
+        changed_fields.append("last_image_id")
 
     # ---- Event log (bounded)
     if "event_log" not in device or not isinstance(device["event_log"], list):
@@ -142,9 +149,9 @@ def refresh_device_from_api(device: dict, payload: dict) -> dict:
     result = {
         "status": "updated" if changed_fields else "no_change",
         "updated_fields": changed_fields,
-        "tamper_changed": device.get("tamper_status") != prev_tamper,
+        "tamper_changed": False,
         "tamper": device.get("tamper_status"),
-        "connectivity_changed": device.get("connectivity") != prev_conn,
+        "connectivity_changed": False,
         "connectivity": device.get("connectivity"),
     }
     return result
