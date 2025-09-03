@@ -7,6 +7,7 @@ from gui.handlers import (
     on_import_json_clicked, on_refresh_api_clicked, open_last_image_for_selected,
     on_selection_change, start_polling
 )
+from gui import handlers
 
 def main():
     root = tk.Tk()
@@ -35,8 +36,14 @@ def main():
     save_btn = ttk.Button(btn_row, text="Save",        command=save_btn_clicked, cursor="hand2")
     imp_btn  = ttk.Button(btn_row, text="Import JSON", command=on_import_json_clicked, cursor="hand2")
     api_btn  = ttk.Button(btn_row, text="Refresh from API", command=on_refresh_api_clicked, cursor="hand2")
-    img_btn  = ttk.Button(btn_row, text="Open Last Image", state=tk.DISABLED, command=open_last_image_for_selected, cursor="hand2")
+    img_btn = ttk.Button(btn_row,
+                     text="Live Snapshot",
+                     command=handlers.open_device_snapshot,
+                     state=tk.DISABLED,
+                     cursor="hand2")
+    img_btn.pack(side=tk.LEFT, padx=16, pady=6)
 
+    
     for b in (add_btn, edit_btn, del_btn, save_btn, imp_btn, api_btn, img_btn):
         b.pack(side=tk.LEFT, padx=16, pady=6)
 

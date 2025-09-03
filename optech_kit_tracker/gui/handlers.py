@@ -16,6 +16,10 @@ import requests
 
 import tempfile
 
+import os, time, shutil, subprocess, tempfile, mimetypes
+from pathlib import Path
+
+
 
 # --- module "globals" ---
 root = None
@@ -29,6 +33,9 @@ total_var = None
 
 devices = []
 POLL_MS = 10_000
+
+RTSP_URL = os.getenv("OPTECH_RTSP_URL", "rtsp://192.168.8.185:8554/cam")
+
 
 def init_handlers(_root, _tatree, _details_text, _img_btn, _edit_btn, _del_btn, _save_var, _total_var, poll_ms: int = 10_000):
     global root, tatree, details_text, img_btn, edit_btn, del_btn, save_var, total_var, devices, POLL_MS
