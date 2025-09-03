@@ -454,20 +454,16 @@
     "kit_id": "REDZONE",
     "notes": "ISR UAV on Op REDZONE",
     "created_at": "2025-09-02",
-    "lat": 22.04625695475531,
-    "lon": 23.01020930520976,
+    "lat": 22.047294095634825,
+    "lon": 23.014379825040027,
     "accuracy_m": null,
-    "battery_pct": 59,
+    "battery_pct": 56,
     "tamper_status": "OK",
-    "connectivity": "OFFLINE",
-    "last_seen": "2025-09-03T14:14:08.683Z",
+    "connectivity": "ONLINE",
+    "last_seen": "2025-09-03T14:50:16.158Z",
     "last_image_url": "A4CR6AZU",
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T12:29:44.028Z",
-        "type": "image_fragment"
-      },
       {
         "ts": "2025-09-03T12:29:46.461Z",
         "type": "image_fragment"
@@ -662,6 +658,10 @@
       },
       {
         "ts": "2025-09-03T14:14:08.683Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:50:16.158Z",
         "type": "image_fragment"
       }
     ],
@@ -1351,20 +1351,16 @@
     "kit_id": "REDZONE",
     "notes": "SATCOM GPS Beacon fitted into car B in Op REDZONE",
     "created_at": "2025-09-02",
-    "lat": 22.001915175097743,
-    "lon": 22.995425524252113,
+    "lat": 22.005447231777378,
+    "lon": 23.00031985365978,
     "accuracy_m": null,
-    "battery_pct": 68,
-    "tamper_status": "OK",
+    "battery_pct": 47,
+    "tamper_status": "TAMPERED",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:11:11.383Z",
+    "last_seen": "2025-09-03T14:50:26.493Z",
     "last_image_url": null,
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T12:42:07.431Z",
-        "type": "beacon"
-      },
       {
         "ts": "2025-09-03T12:42:38.814Z",
         "type": "beacon"
@@ -1560,6 +1556,10 @@
       {
         "ts": "2025-09-03T14:11:11.383Z",
         "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:50:26.493Z",
+        "type": "beacon"
       }
     ]
   },
@@ -1572,21 +1572,16 @@
     "kit_id": "TOUCHDOWN",
     "notes": "SATCOM GPS Beacon fitted into car in Op TOUCHDOWN",
     "created_at": "2025-09-02",
-    "lat": 44.00963768097739,
-    "lon": 23.004946678093408,
+    "lat": 43.99157298568693,
+    "lon": 22.997502157870652,
     "accuracy_m": null,
-    "battery_pct": 3,
+    "battery_pct": 13,
     "tamper_status": "OK",
-    "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:11:14.193Z",
+    "connectivity": "OFFLINE",
+    "last_seen": "2025-09-03T14:50:36.664Z",
     "last_image_url": null,
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T12:00:17.680Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
       {
         "ts": "2025-09-03T12:01:53.333Z",
         "type": "API_REFRESH",
@@ -1783,6 +1778,10 @@
       },
       {
         "ts": "2025-09-03T14:11:14.193Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:50:36.664Z",
         "type": "beacon"
       }
     ]

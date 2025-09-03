@@ -9,6 +9,10 @@ DEFAULTS = {
     "media_base": ""                
 }
 
+POLL_INTERVAL_MS = 5000
+ALERT_DEBOUNCE_MS = 800
+MAP_KEEP_ALIVE_MS = 50
+
 def load_config() -> dict:
     if CONFIG_FILE.exists():
         try:

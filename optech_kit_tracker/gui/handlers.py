@@ -31,8 +31,7 @@ last_alert_bell_ts = 0
 
 
 devices = []
-POLL_MS = 10_000
-
+POLL_MS = 60_000
 
 DEFAULT_RTSP_URL = os.getenv("OPTECH_RTSP_URL", "rtsp://192.168.8.185:8554/cam")
 

@@ -2,6 +2,11 @@
 import os
 import requests
 from app_config import load_config
+from typing import List, Dict, Any
+
+_SESSION = requests.Session()
+_TIMEOUT = 8
+
 
 API_URL   = os.getenv("OPTECH_API_URL", "https://kit-tracker.peacemosquitto.workers.dev").rstrip("/")
 API_TOKEN = os.getenv("OPTECH_API_TOKEN", "Bearer 63T-nAch05-p3W5-lIn60t")
@@ -20,24 +25,34 @@ def _auth_header():
     return {"Authorization": token if token.lower().startswith("bearer ")
             else f"Bearer {token}"}
 
-def fetch_payloads():
+def fetch_payloads() -> List[Dict[str, Any]]:
+    """
+    Fetch payloads from API_URL and always return a list of dicts.
+    - Uses a shared requests.Session for speed.
+    - Defensive JSON parsing (non-JSON => []).
+    - Normalizes {'results': [...]} and single-object dicts to a list.
+    """
     headers = _auth_header()
-    resp = requests.get(API_URL, headers=headers, timeout=8)
-    resp.raise_for_status()
-    data = resp.json()
+    try:
+        resp = _SESSION.get(API_URL, headers=headers, timeout=_TIMEOUT)
+        resp.raise_for_status()
+    except requests.RequestException:
+        # Optional: log here instead of crashing UI
+        return []
+
+    try:
+        data = resp.json()
+    except ValueError:
+        return []
+
+    # Normalize to list
     if isinstance(data, dict) and "results" in data:
         data = data["results"]
+
+    if isinstance(data, list):
+        return [d for d in data if isinstance(d, dict)]
+
     if isinstance(data, dict):
         return [data]
-    if isinstance(data, list):
-        return data
-    return []
 
-# Kept for future, but handlers now use RTSP snapshots instead:
-def build_media_url(image_id_or_url: str) -> str | None:
-    if not image_id_or_url:
-        return None
-    s = str(image_id_or_url).strip()
-    if s.startswith(("http://", "https://")):
-        return s
-    return f"{MEDIA_BASE}/{s}"
+    return []
