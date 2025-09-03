@@ -1,0 +1,5 @@
+Ideally, a computer,
+Fingers,
+Python.
+
+pip install requests

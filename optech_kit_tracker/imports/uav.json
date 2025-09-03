@@ -1,0 +1,27 @@
+{
+    "type": "uav",
+    "model": "AVENGER",
+    "serial": "0002",
+    "op": "TOUCHDOWN",
+    "description": "ISR UAV on Op TOUCHDOWN",
+    "position": {
+        "lat": 44.0473975576113,
+        "lon": 23.0253447831921,
+        "alt": 3004.8405717369087,
+        "spd": 30.915454635543544
+    },
+    "timestamp": "2025-08-21T14:37:03.866Z",
+    "mobile": true,
+    "online": true,
+    "tampered": false,
+    "battery": 13,
+    "payload": {
+        "type": "image_fragment",
+        "id": "GKNFE80I",
+        "format": "bmp",
+        "size_kb": 286,
+        "fragment": 6,
+        "total_fragments": 10,
+        "checksum": "f17927ab"
+    }
+}

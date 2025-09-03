@@ -1,0 +1,32 @@
+{
+    "type": "signal_collect",
+    "model": "SNOOPER",
+    "serial": "0001",
+    "op": "SNAKE_EATER",
+    "description": "SIGINT device on Op SNAKE_EATER",
+    "position": {
+        "lat": 33.988271435352175,
+        "lon": 32.20197644260562,
+        "alt": 5.206932974395037,
+        "spd": 0
+    },
+    "timestamp": "2025-08-21T13:47:00.478Z",
+    "mobile": true,
+    "online": true,
+    "tampered": false,
+    "battery": 33,
+    "payload": {
+        "type": "signal_capture",
+        "id": "3YZQHZ2F",
+        "frequency_mhz": "1341.54",
+        "bandwidth_khz": 195,
+        "snr_db": "9.6",
+        "samples": [
+            "0.440",
+            "-0.997",
+            "-0.301",
+            "0.940",
+            "0.806"
+        ]
+    }
+}

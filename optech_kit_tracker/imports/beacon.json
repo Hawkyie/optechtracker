@@ -1,0 +1,21 @@
+{
+    "type": "beacon",
+    "model": "BE300A",
+    "serial": "A10002234",
+    "op": "TOUCHDOWN",
+    "description": "LTE GPS Beacon fitted into truck in Op TOUCHDOWN",
+    "position": {
+        "lat": 44.00907552436259,
+        "lon": 23.00106723578179,
+        "alt": -2.319972230609759,
+        "spd": 1.774858580246665
+    },
+    "timestamp": "2025-08-21T14:35:04.720Z",
+    "mobile": true,
+    "online": true,
+    "tampered": true,
+    "battery": 77,
+    "payload": {
+        "type": ""
+    }
+}
