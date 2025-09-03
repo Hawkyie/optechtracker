@@ -39,39 +39,51 @@ def import_device_json_dir(dir_path: Union[str, Path]):
             actions[res["action"]] += 1
     return actions
 
-# storage/json_store.py
 def upsert_device_from_api(payload: dict):
     devices = load_data()
+
     serial = payload.get("serial")
     if not serial:
         raise ValueError("Payload missing 'serial' – cannot upsert.")
-    model  = payload.get("model")
+    model = payload.get("model")
 
-    existing = next((d for d in devices
-                     if d.get("serial_number") == serial and (not model or d.get("model") == model)), None)
+    existing = next(
+        (d for d in devices
+         if d.get("serial_number") == serial and (not model or d.get("model") == model)),
+        None
+    )
+
+    # default result shape in case refresh/create doesn't return flags
+    res = {
+        "status": "no_change",
+        "updated_fields": [],
+        "tamper_changed": False,
+        "tamper": None,
+        "connectivity_changed": False,
+        "connectivity": None,
+    }
 
     if existing:
-        before_tamper = existing.get("tamper_status")
-        before_conn   = existing.get("connectivity")
-        result = refresh_device_from_api(existing, payload)  # "updated" | "no_change"
-        action = "updated" if result == "updated" else "no_change"
-        after_tamper = existing.get("tamper_status")
-        after_conn   = existing.get("connectivity")
+        r = refresh_device_from_api(existing, payload) or {}
+        res.update(r)
+        action = res.get("status", "no_change")
     else:
         new_dev = create_device_from_api(payload)
         devices.append(new_dev)
         action = "created"
-        before_tamper = before_conn = None
-        after_tamper = new_dev.get("tamper_status")
-        after_conn   = new_dev.get("connectivity")
+        # Fill flags from the newly created device's current state
+        res.update({
+            "tamper": new_dev.get("tamper_status"),
+            "connectivity": new_dev.get("connectivity"),
+        })
 
     save_data(devices)
+
+    # Preserve the original return contract but now include the refresh flags, too
     return {
         "action": action,
         "serial": serial,
-        "tamper_changed": before_tamper != after_tamper if existing else False,
-        "connectivity_changed": before_conn != after_conn if existing else False,
-        "tamper": after_tamper,
-        "connectivity": after_conn,
+        **res,
     }
+
 

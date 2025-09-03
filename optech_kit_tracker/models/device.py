@@ -50,32 +50,102 @@ def create_device_from_api(data: dict):
         "event_log": [{"ts": data.get("timestamp"), "type": "IMPORT", "payload": data}]
     }
 
-def refresh_device_from_api(device: dict, payload: dict) -> str:
-    pos = payload.get("position", {})
-    changed = False
-    def set_if_changed(key, val):
-        nonlocal changed
-        if val is not None and device.get(key) != val:
-            device[key] = val
-            changed = True
+import utils
 
-    set_if_changed("lat", utils.to_float(pos.get("lat")))
-    set_if_changed("lon", utils.to_float(pos.get("lon")))
-    set_if_changed("battery_pct", utils.to_int(payload.get("battery")))
-    set_if_changed("last_seen", payload.get("timestamp"))
+def refresh_device_from_api(device: dict, payload: dict) -> dict:
+    """
+    Update a device in-place from an API payload.
+    Returns:
+      {
+        "status": "updated" | "no_change",
+        "updated_fields": [...],
+        "tamper_changed": bool,
+        "tamper": "TAMPERED" | "OK" | "UNKNOWN",
+        "connectivity_changed": bool,
+        "connectivity": "ONLINE" | "OFFLINE" | "UNKNOWN",
+      }
+    """
+    changed_fields = []
 
-    new_tamper = ("TAMPERED" if payload.get("tampered") is True
-                  else "OK" if payload.get("tampered") is False
-                  else "UNKNOWN")
-    new_conn = ("ONLINE" if payload.get("online") is True
-                else "OFFLINE" if payload.get("online") is False
-                else "UNKNOWN")
-    set_if_changed("tamper_status", new_tamper)
-    set_if_changed("connectivity", new_conn)
+    # Keep prior values to compute change flags
+    prev_tamper = device.get("tamper_status")
+    prev_conn   = device.get("connectivity")
 
-    device.setdefault("event_log", []).append({
-        "ts": payload.get("timestamp") or utils.now_iso_datetime(),
-        "type": "STATUS",
-        "payload": payload
+    # ---- Position
+    pos = payload.get("position") or {}
+    for k in ("lat", "lon"):
+        v = pos.get(k)
+        if v is not None and v != device.get(k):
+            device[k] = v
+            changed_fields.append(k)
+
+    # ---- Last seen
+    ts = payload.get("timestamp")
+    if ts and ts != device.get("last_seen"):
+        device["last_seen"] = ts
+        changed_fields.append("last_seen")
+
+    # ---- Battery
+    batt = payload.get("battery")
+    try:
+        batt_i = int(batt) if batt is not None else None
+    except (TypeError, ValueError):
+        batt_i = None
+    if batt_i != device.get("battery_pct"):
+        device["battery_pct"] = batt_i
+        changed_fields.append("battery_pct")
+
+    # ---- Tamper
+    tampered = payload.get("tampered")
+    if tampered is True:
+        tamper_status = "TAMPERED"
+    elif tampered is False:
+        tamper_status = "OK"
+    else:
+        tamper_status = "UNKNOWN"
+    if tamper_status != device.get("tamper_status"):
+        device["tamper_status"] = tamper_status
+        changed_fields.append("tamper_status")
+
+    # ---- Connectivity
+    online = payload.get("online")
+    if online is True:
+        conn = "ONLINE"
+    elif online is False:
+        conn = "OFFLINE"
+    else:
+        conn = device.get("connectivity", "UNKNOWN")
+    if conn != device.get("connectivity"):
+        device["connectivity"] = conn
+        changed_fields.append("connectivity")
+
+    # ---- Image payload -> last_image_url
+    pl = payload.get("payload") or {}
+    ptype = (pl.get("type") or "").lower()
+    if ptype in {"image", "image_capture", "image_fragment"}:
+        img_ref = pl.get("url") or pl.get("thumbnail_url") or pl.get("id")
+        if img_ref and img_ref != device.get("last_image_url"):
+            device["last_image_url"] = img_ref
+            changed_fields.append("last_image_url")
+
+    # ---- Event log (bounded)
+    if "event_log" not in device or not isinstance(device["event_log"], list):
+        device["event_log"] = []
+    device["event_log"].append({
+        "ts": ts or utils.today_iso_date(),
+        "type": "API_REFRESH",
+        "payload_type": ptype or payload.get("type"),
     })
-    return "updated" if changed else "no_change"
+    if len(device["event_log"]) > 50:
+        device["event_log"] = device["event_log"][-50:]
+
+    result = {
+        "status": "updated" if changed_fields else "no_change",
+        "updated_fields": changed_fields,
+        "tamper_changed": device.get("tamper_status") != prev_tamper,
+        "tamper": device.get("tamper_status"),
+        "connectivity_changed": device.get("connectivity") != prev_conn,
+        "connectivity": device.get("connectivity"),
+    }
+    return result
+
