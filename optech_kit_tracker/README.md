@@ -26,7 +26,7 @@ It provides a simple interface to view device status, live updates, maps, and al
 
 ---
 
-## 📦 Installation
+## Installation
 
 1. Clone the repository:
    ```bash
@@ -60,4 +60,5 @@ py -m desktop.app
 Wonky success, remember who you fight for.
 
 https://imgur.com/gallery/helfr-4VgzGKG
+
 
