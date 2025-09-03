@@ -28,6 +28,8 @@ map_widget = None
 _map_markers = []
 last_selected_iid = None
 _suppress_select_events = False
+last_alert_bell_ts = 0 
+
 
 
 devices = []
@@ -679,24 +681,29 @@ def poll_api():
         pass
     finally:
         if alerts:
+            # Log to Alerts panel (non-blocking)
+            for msg in alerts:
+                _push_alert(msg)
+
+            # Throttle the bell (once every 10s max)
+            global last_alert_bell_ts
+            now = time.time()
+            if now - last_alert_bell_ts > 10:
+                try:
+                    root.bell()
+                except Exception:
+                    pass
+                last_alert_bell_ts = now
+
+            # Brief, non-blocking status flash instead of a modal popup
             try:
-                root.bell()
+                save_var.set(f"{len(alerts)} new alert(s)")
+                root.after(6000, lambda: save_var.set(""))
             except Exception:
                 pass
-            msg = "\n".join(alerts[:10]) + (f"\n…and {len(alerts)-10} more" if len(alerts) > 10 else "")
-            messagebox.showwarning("Alerts", msg, parent=root)
-
-        # Single, safe repaint (preserves selection & map center)
-        refresh_device_list()
 
         root.after(POLL_MS, poll_api)
 
-
-        root.after(POLL_MS, poll_api)
-        # Example if you stop reinserting:
-    for d in devices:
-        if tatree.exists(d["id"]):
-            tatree.item(d["id"], values=row_values(d), tags=_compute_row_tags(d))
 
 
 def start_polling(ms: int):

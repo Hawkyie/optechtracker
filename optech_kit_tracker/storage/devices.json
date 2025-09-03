@@ -8,65 +8,16 @@
     "kit_id": "TOUCHDOWN",
     "notes": "ISR UAV on Op TOUCHDOWN",
     "created_at": "2025-09-02",
-    "lat": 44.048738154957185,
-    "lon": 23.01513267567964,
+    "lat": 44.043738558896145,
+    "lon": 23.019506445626945,
     "accuracy_m": null,
-    "battery_pct": 15,
+    "battery_pct": 46,
     "tamper_status": "OK",
-    "connectivity": "OFFLINE",
-    "last_seen": "2025-09-03T14:10:18.483Z",
+    "connectivity": "ONLINE",
+    "last_seen": "2025-09-03T14:14:19.279Z",
     "last_image_url": "KXEPUV1X",
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T11:55:59.949Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T11:56:42.413Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T11:57:25.499Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T11:57:36.711Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T11:58:50.537Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T11:59:34.085Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:01:21.511Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:04:03.770Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:04:14.859Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:29:42.489Z",
-        "type": "image_fragment"
-      },
       {
         "ts": "2025-09-03T12:29:53.165Z",
         "type": "image_fragment"
@@ -226,6 +177,46 @@
       {
         "ts": "2025-09-03T14:10:18.483Z",
         "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:35.141Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:35.655Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:47.543Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:52.297Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:54.597Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:11:03.159Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:11:03.805Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:11:06.486Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:11:11.886Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:14:19.279Z",
+        "type": "image_fragment"
       }
     ],
     "last_image_id": "ZADPGO45"
@@ -239,76 +230,16 @@
     "kit_id": "TOUCHDOWN",
     "notes": "LTE GPS Beacon fitted into truck in Op TOUCHDOWN",
     "created_at": "2025-09-02",
-    "lat": 44.005996688604355,
-    "lon": 23.003155613343907,
+    "lat": 43.99989043216872,
+    "lon": 22.99016051113502,
     "accuracy_m": null,
-    "battery_pct": 33,
+    "battery_pct": 76,
     "tamper_status": "OK",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:10:26.243Z",
+    "last_seen": "2025-09-03T14:11:12.338Z",
     "last_image_url": null,
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T11:36:25.122Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:36:58.710Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:38:16.632Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:46:46.369Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:48:10.016Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:49:23.650Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:52:13.167Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:52:55.149Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:57:03.331Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:59:56.740Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:00:59.832Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:01:42.775Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
       {
         "ts": "2025-09-03T12:02:24.962Z",
         "type": "API_REFRESH",
@@ -463,6 +394,54 @@
       {
         "ts": "2025-09-03T14:10:26.243Z",
         "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:27.222Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:29.533Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:34.167Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:40.559Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:41.011Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:47.044Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:50.461Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:54.149Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:00.050Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:00.897Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:01.346Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:12.338Z",
+        "type": "beacon"
       }
     ]
   },
@@ -475,66 +454,16 @@
     "kit_id": "REDZONE",
     "notes": "ISR UAV on Op REDZONE",
     "created_at": "2025-09-02",
-    "lat": 22.045878543238114,
-    "lon": 23.00005071517807,
+    "lat": 22.04625695475531,
+    "lon": 23.01020930520976,
     "accuracy_m": null,
-    "battery_pct": 29,
+    "battery_pct": 59,
     "tamper_status": "OK",
-    "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:10:21.931Z",
+    "connectivity": "OFFLINE",
+    "last_seen": "2025-09-03T14:14:08.683Z",
     "last_image_url": "A4CR6AZU",
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T11:53:37.112Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T11:54:08.652Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T11:54:35.602Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T11:56:10.397Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T11:56:21.542Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:01:32.227Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:03:18.461Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:04:25.348Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:04:36.961Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:10:46.429Z",
-        "type": "API_REFRESH",
-        "payload_type": "image_fragment"
-      },
       {
         "ts": "2025-09-03T12:29:44.028Z",
         "type": "image_fragment"
@@ -694,6 +623,46 @@
       {
         "ts": "2025-09-03T14:10:21.931Z",
         "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:36.974Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:39.186Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:44.686Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:45.624Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:46.555Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:48.738Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:57.376Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:11:09.151Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:11:09.584Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:14:08.683Z",
+        "type": "image_fragment"
       }
     ],
     "last_image_id": "IKASMKHH"
@@ -707,68 +676,16 @@
     "kit_id": "SNAKE_EATER",
     "notes": "SIGINT device on Op SNAKE_EATER",
     "created_at": "2025-09-02",
-    "lat": 33.98774586206557,
-    "lon": 32.21820858230029,
+    "lat": 33.97229466980679,
+    "lon": 32.21748747622676,
     "accuracy_m": null,
-    "battery_pct": 85,
-    "tamper_status": "TAMPERED",
+    "battery_pct": 17,
+    "tamper_status": "OK",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:10:23.276Z",
+    "last_seen": "2025-09-03T14:13:58.190Z",
     "last_image_url": null,
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T12:31:59.454Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T12:33:58.623Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T12:41:06.349Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T12:41:13.708Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T12:41:26.370Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T12:41:28.520Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T12:42:17.942Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T12:42:28.360Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T12:43:20.703Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:14:50.663Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:15:03.861Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:15:18.364Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:16:32.080Z",
-        "type": "signal_capture"
-      },
       {
         "ts": "2025-09-03T13:16:52.977Z",
         "type": "signal_capture"
@@ -916,6 +833,58 @@
       {
         "ts": "2025-09-03T14:10:23.276Z",
         "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:10:28.934Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:10:33.683Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:10:38.765Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:10:50.012Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:10:51.379Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:10:51.879Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:10:56.470Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:10:58.734Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:11:01.789Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:11:06.902Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:11:10.910Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:11:13.756Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T14:13:58.190Z",
+        "type": "signal_capture"
       }
     ],
     "last_image_id": "CHU4VQHF"
@@ -929,48 +898,16 @@
     "kit_id": "SNAKE_EATER",
     "notes": "KINETIC UAV on Op SNAKE_EATER",
     "created_at": "2025-09-02",
-    "lat": 33.9884081097346,
-    "lon": 32.01437084210071,
+    "lat": 33.992667711032695,
+    "lon": 32.0147797724275,
     "accuracy_m": null,
-    "battery_pct": 95,
+    "battery_pct": 81,
     "tamper_status": "OK",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:10:23.816Z",
+    "last_seen": "2025-09-03T14:11:04.661Z",
     "last_image_url": "YTIEXHNZ",
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T12:32:31.809Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:32:42.692Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:33:16.132Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:41:19.069Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:41:21.155Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:42:49.300Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:43:10.118Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T13:10:05.298Z",
-        "type": "image_fragment"
-      },
       {
         "ts": "2025-09-03T13:15:14.529Z",
         "type": "image_fragment"
@@ -1138,6 +1075,38 @@
       {
         "ts": "2025-09-03T14:10:23.816Z",
         "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:32.694Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:37.994Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:43.538Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:49.616Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:50.901Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:53.723Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:10:59.180Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T14:11:04.661Z",
+        "type": "image_fragment"
       }
     ],
     "last_image_id": "FHLCMW8I"
@@ -1151,81 +1120,16 @@
     "kit_id": "REDZONE",
     "notes": "SATCOM GPS Beacon fitted into car A in Op REDZONE",
     "created_at": "2025-09-02",
-    "lat": 21.9902789544096,
-    "lon": 23.00437372329954,
+    "lat": 21.993746811105993,
+    "lon": 22.996649917041506,
     "accuracy_m": null,
-    "battery_pct": 47,
+    "battery_pct": 10,
     "tamper_status": "OK",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:09:55.506Z",
+    "last_seen": "2025-09-03T14:11:08.705Z",
     "last_image_url": null,
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T11:23:20.855Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:24:45.144Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:26:19.069Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:32:25.318Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:34:52.941Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:35:39.421Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:37:31.647Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:38:05.783Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:39:10.231Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:41:27.586Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:44:14.688Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:44:48.455Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:45:51.711Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
       {
         "ts": "2025-09-03T11:47:07.325Z",
         "type": "API_REFRESH",
@@ -1383,6 +1287,58 @@
       {
         "ts": "2025-09-03T14:09:55.506Z",
         "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:28.304Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:30.042Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:32.060Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:36.139Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:36.564Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:41.995Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:45.159Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:46.093Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:49.180Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:56.004Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:56.929Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:04.240Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:08.705Z",
+        "type": "beacon"
       }
     ]
   },
@@ -1395,78 +1351,16 @@
     "kit_id": "REDZONE",
     "notes": "SATCOM GPS Beacon fitted into car B in Op REDZONE",
     "created_at": "2025-09-02",
-    "lat": 21.998593105757234,
-    "lon": 23.00753132484433,
+    "lat": 22.001915175097743,
+    "lon": 22.995425524252113,
     "accuracy_m": null,
-    "battery_pct": 10,
+    "battery_pct": 68,
     "tamper_status": "OK",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:10:22.415Z",
+    "last_seen": "2025-09-03T14:11:11.383Z",
     "last_image_url": null,
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T11:51:41.382Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:53:47.577Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:55:17.565Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:57:47.105Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:57:57.664Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:58:18.505Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:29:21.479Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:30:24.739Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:30:29.651Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:30:40.310Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:30:43.000Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:30:56.299Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:31:17.820Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:33:05.641Z",
-        "type": "beacon"
-      },
       {
         "ts": "2025-09-03T12:42:07.431Z",
         "type": "beacon"
@@ -1610,6 +1504,62 @@
       {
         "ts": "2025-09-03T14:10:22.415Z",
         "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:27.786Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:31.582Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:33.218Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:34.640Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:40.105Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:41.594Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:42.534Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:44.041Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:53.247Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:00.469Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:02.652Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:05.914Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:10.437Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:11.383Z",
+        "type": "beacon"
       }
     ]
   },
@@ -1622,86 +1572,16 @@
     "kit_id": "TOUCHDOWN",
     "notes": "SATCOM GPS Beacon fitted into car in Op TOUCHDOWN",
     "created_at": "2025-09-02",
-    "lat": 44.002570925151296,
-    "lon": 23.005109787205612,
+    "lat": 44.00963768097739,
+    "lon": 23.004946678093408,
     "accuracy_m": null,
-    "battery_pct": 5,
+    "battery_pct": 3,
     "tamper_status": "OK",
-    "connectivity": "OFFLINE",
-    "last_seen": "2025-09-03T14:10:26.698Z",
+    "connectivity": "ONLINE",
+    "last_seen": "2025-09-03T14:11:14.193Z",
     "last_image_url": null,
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T11:42:34.169Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:42:56.679Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:43:40.527Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:45:41.251Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:47:28.283Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:47:49.115Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:50:38.439Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:50:49.325Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:53:05.561Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:54:45.984Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:55:07.051Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:55:39.069Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:56:52.831Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:58:29.024Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
       {
         "ts": "2025-09-03T12:00:17.680Z",
         "type": "API_REFRESH",
@@ -1847,6 +1727,62 @@
       },
       {
         "ts": "2025-09-03T14:10:26.698Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:30.629Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:31.082Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:39.646Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:48.008Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:55.037Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:55.533Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:58.289Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:10:59.596Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:02.234Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:05.260Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:08.266Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:10.022Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:13.028Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T14:11:14.193Z",
         "type": "beacon"
       }
     ]
