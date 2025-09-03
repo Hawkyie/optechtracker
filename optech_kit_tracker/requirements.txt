@@ -1,9 +1,10 @@
-Ideally, a computer,
+Ideally a computer,
 Fingers,
 Python.
 
-requests
-opencv-python
-pip install requests
-pip install opencv-python
-pip install tkintermapview
+
+requests>=2.31.0       # API client (fetching payloads, media URLs)
+Pillow>=10.0.0         # Image handling (snapshots, Tkinter image display)
+opencv-python>=4.8.0   # For snapshot capture/stream placeholder
+folium>=0.16.0         # Map rendering (interactive maps in UI)
+tkintermapview>=1.6.0  # Interactive map widget for Tkinter

@@ -5,7 +5,6 @@ import webbrowser
 from pathlib import Path
 from typing import Optional
 from tkinter import messagebox, simpledialog, filedialog
-
 from storage.json_store import (
     init_store, load_data, save_data, import_device_json, upsert_device_from_api
 )
@@ -31,7 +30,6 @@ _suppress_select_events = False
 last_alert_bell_ts = 0 
 
 
-
 devices = []
 POLL_MS = 10_000
 
@@ -44,7 +42,7 @@ def init_handlers(
     _save_var, _total_var,
     poll_ms: int = 10_000,
     _alerts_list=None,
-    _map_widget=None                    # NEW
+    _map_widget=None
 ):
     global root, tatree, details_text, img_btn, edit_btn, del_btn
     global save_var, total_var, devices, POLL_MS, alerts_list, map_widget
@@ -54,7 +52,7 @@ def init_handlers(
     save_var, total_var = _save_var, _total_var
     POLL_MS = poll_ms
     alerts_list = _alerts_list
-    map_widget = _map_widget           # NEW
+    map_widget = _map_widget
 
     init_store()
     devices = load_data()
@@ -62,15 +60,13 @@ def init_handlers(
     refresh_total_device()
     on_selection_change()
 
-    # Optional: configure row tag styles if you use colouring
     try:
         _configure_tree_tags()
     except Exception:
         pass
 
-    # Initialize the map with any existing devices
     try:
-        update_map_markers()           # NEW
+        update_map_markers()           
     except Exception:
         pass
 
@@ -78,7 +74,7 @@ def init_handlers(
 # ---------- helpers ----------
 
 def _compute_row_tags(d: dict) -> list[str]:
-    # Normalise values; avoid stray spaces/case mismatches.
+   
     conn = (d.get("connectivity") or "").strip().upper()
     tamp = (d.get("tamper_status") or "").strip().upper()
 
@@ -97,7 +93,7 @@ def _compute_row_tags(d: dict) -> list[str]:
 
 
 def _configure_tree_tags():
-    # Configure visual styles for tags (call this once in init)
+    # call this once in init
     try:
         tatree.tag_configure("normal")
         tatree.tag_configure("offline", background="#FFEAEA", foreground="#8B0000")   # light red row
@@ -107,7 +103,6 @@ def _configure_tree_tags():
 
 
 def _configure_tree_tags():
-    # subtle backgrounds + strong text; tweak to taste
     tatree.tag_configure("normal")
     tatree.tag_configure("offline", background="#FFEAEA", foreground="#8B0000")   # light red
     tatree.tag_configure("tampered", background="#FFF6CC", foreground="#6B4E00")  # light amber
@@ -136,7 +131,7 @@ def center_map_on_current_selection():
     iid = sel[0] if sel else None
     if not iid:
         try:
-            iid = last_selected_iid  # defined earlier in your selection-preserve patch
+            iid = last_selected_iid  # defined earlier selection-preserve patch
         except NameError:
             iid = None
 
@@ -160,7 +155,6 @@ def on_notebook_tab_changed(event):
             center_map_on_current_selection()
     except Exception:
         pass
-
 
 
 def _device_has_image_events(d: dict) -> bool:
@@ -234,7 +228,6 @@ def insert_row(d: dict):
     tatree.insert("", "end", iid=d["id"], values=row_values(d), tags=_compute_row_tags(d))
 
 
-
 def show_details(d: Optional[dict]):
     details_text.configure(state="normal")
     details_text.delete("1.0", "end")
@@ -268,11 +261,11 @@ def refresh_device_list():
     """Repaint table from disk while preserving selection, scroll and map center."""
     global devices, _suppress_select_events, last_selected_iid
 
-    # remember selection we want to keep
+    # remember selection to keep
     current_sel = tatree.selection()
     wanted_iid = current_sel[0] if current_sel else last_selected_iid
 
-    # remember scroll so we don't jump to the top
+    # remember scroll so doesn't jump to top
     try:
         y0, _ = tatree.yview()
     except Exception:

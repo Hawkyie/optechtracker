@@ -26,6 +26,24 @@ It provides a simple interface to view device status, live updates, maps, and al
 
 ---
 
+## Reflection
+
+**Liked**
+- Liked the challenge overall, wide array of different tasks that needed to be completed to achieve the overall result.
+- The way I split the program down into different parts as to not bloat the main file itself.
+- How it is all pieced together to create the actual program.
+
+**Disliked**
+- The headaches.
+- Overall mistakes that were made throughout.
+
+**Future Proof**
+- Scale to be ported to applications, to be able to run on phones. Allowing it to be utilised whilst mobile.
+- Tidy up the GUI and add a bit of beauty, currently looks very military as in gets the job done but that's it.
+- Add more features, spcifially isolating API updates specific to when an event occurs not just overall.
+
+---
+
 ## Installation
 
 1. Clone the repository:
