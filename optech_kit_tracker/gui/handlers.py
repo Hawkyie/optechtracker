@@ -669,7 +669,7 @@ def poll_api():
 
 
     except Exception:
-        # swallow transient API errors — panel is for device alerts, not network noise
+        # swallow transient API errors
         pass
     finally:
         if alerts:
@@ -687,7 +687,7 @@ def poll_api():
                     pass
                 last_alert_bell_ts = now
 
-            # Brief, non-blocking status flash instead of a modal popup
+            # non-blocking status flash instead of a popup
             try:
                 save_var.set(f"{len(alerts)} new alert(s)")
                 root.after(6000, lambda: save_var.set(""))

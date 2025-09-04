@@ -139,7 +139,7 @@ def main():
         root, tatree, details_text,
         img_btn, edit_btn, del_btn,
         save_btn_var := save_var, total_var,
-        poll_ms=10_000,
+        poll_ms=2000,
         _alerts_list=alerts_list,      
         _map_widget=map_widget    
     )

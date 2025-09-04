@@ -9,7 +9,7 @@ DEFAULTS = {
     "media_base": ""                
 }
 
-POLL_INTERVAL_MS = 5000
+POLL_INTERVAL_MS = 2000
 ALERT_DEBOUNCE_MS = 800
 MAP_KEEP_ALIVE_MS = 50
 

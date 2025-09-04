@@ -8,48 +8,16 @@
     "kit_id": "TOUCHDOWN",
     "notes": "ISR UAV on Op TOUCHDOWN",
     "created_at": "2025-09-02",
-    "lat": 44.043738558896145,
-    "lon": 23.019506445626945,
+    "lat": 44.03835066224492,
+    "lon": 23.02308578332935,
     "accuracy_m": null,
-    "battery_pct": 46,
+    "battery_pct": 88,
     "tamper_status": "OK",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:14:19.279Z",
+    "last_seen": "2025-09-04T11:25:46.713Z",
     "last_image_url": "KXEPUV1X",
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T12:29:53.165Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:30:07.257Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:30:09.315Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:30:45.513Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:31:54.711Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:32:47.185Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:32:53.106Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:33:26.935Z",
-        "type": "image_fragment"
-      },
       {
         "ts": "2025-09-03T12:34:31.369Z",
         "type": "image_fragment"
@@ -217,6 +185,38 @@
       {
         "ts": "2025-09-03T14:14:19.279Z",
         "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T15:10:24.398Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T15:10:45.068Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:21:34.773Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:21:44.855Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:21:58.524Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:22:03.387Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:24:05.767Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:25:46.713Z",
+        "type": "image_fragment"
       }
     ],
     "last_image_id": "ZADPGO45"
@@ -230,55 +230,16 @@
     "kit_id": "TOUCHDOWN",
     "notes": "LTE GPS Beacon fitted into truck in Op TOUCHDOWN",
     "created_at": "2025-09-02",
-    "lat": 43.99989043216872,
-    "lon": 22.99016051113502,
+    "lat": 44.00235955784104,
+    "lon": 22.99221585000831,
     "accuracy_m": null,
-    "battery_pct": 76,
+    "battery_pct": 52,
     "tamper_status": "OK",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:11:12.338Z",
+    "last_seen": "2025-09-04T11:25:16.468Z",
     "last_image_url": null,
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T12:02:24.962Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:03:29.967Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:03:40.452Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:30:35.120Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:30:52.207Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:31:49.055Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:34:09.047Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:34:20.819Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:41:08.323Z",
-        "type": "beacon"
-      },
       {
         "ts": "2025-09-03T12:41:16.750Z",
         "type": "beacon"
@@ -442,6 +403,42 @@
       {
         "ts": "2025-09-03T14:11:12.338Z",
         "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T15:10:55.181Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:20:34.283Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:20:54.415Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:22:05.015Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:22:45.274Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:23:05.404Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:24:15.839Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:24:25.890Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:25:16.468Z",
+        "type": "beacon"
       }
     ]
   },
@@ -454,52 +451,16 @@
     "kit_id": "REDZONE",
     "notes": "ISR UAV on Op REDZONE",
     "created_at": "2025-09-02",
-    "lat": 22.047294095634825,
-    "lon": 23.014379825040027,
+    "lat": 22.034819244242527,
+    "lon": 23.00277581372153,
     "accuracy_m": null,
-    "battery_pct": 56,
+    "battery_pct": 38,
     "tamper_status": "OK",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:50:16.158Z",
+    "last_seen": "2025-09-04T11:26:06.870Z",
     "last_image_url": "A4CR6AZU",
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T12:29:46.461Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:29:55.380Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:31:16.712Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:31:45.141Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:32:12.690Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:32:50.600Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:34:42.273Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:41:14.908Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T12:41:23.492Z",
-        "type": "image_fragment"
-      },
       {
         "ts": "2025-09-03T13:33:17.752Z",
         "type": "image_fragment"
@@ -663,6 +624,42 @@
       {
         "ts": "2025-09-03T14:50:16.158Z",
         "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T15:11:56.062Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:20:24.223Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:20:44.353Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:22:05.867Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:22:25.147Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:23:25.536Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:23:45.653Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:24:46.046Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:26:06.870Z",
+        "type": "image_fragment"
       }
     ],
     "last_image_id": "IKASMKHH"
@@ -676,56 +673,16 @@
     "kit_id": "SNAKE_EATER",
     "notes": "SIGINT device on Op SNAKE_EATER",
     "created_at": "2025-09-02",
-    "lat": 33.97229466980679,
-    "lon": 32.21748747622676,
+    "lat": 33.983660308370105,
+    "lon": 32.217673889969625,
     "accuracy_m": null,
-    "battery_pct": 17,
+    "battery_pct": 0,
     "tamper_status": "OK",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:13:58.190Z",
+    "last_seen": "2025-09-04T11:26:16.946Z",
     "last_image_url": null,
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T13:16:52.977Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:17:03.452Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:17:24.493Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:32:03.138Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:34:55.901Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:35:53.721Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:38:21.524Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:39:59.265Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:41:29.310Z",
-        "type": "signal_capture"
-      },
-      {
-        "ts": "2025-09-03T13:42:11.440Z",
-        "type": "signal_capture"
-      },
       {
         "ts": "2025-09-03T13:57:32.065Z",
         "type": "signal_capture"
@@ -885,6 +842,46 @@
       {
         "ts": "2025-09-03T14:13:58.190Z",
         "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-03T15:11:25.586Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-04T06:56:25.490Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-04T11:20:40.992Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-04T11:21:55.482Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-04T11:22:00.983Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-04T11:22:35.213Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-04T11:22:55.336Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-04T11:25:06.215Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-04T11:25:26.602Z",
+        "type": "signal_capture"
+      },
+      {
+        "ts": "2025-09-04T11:26:16.946Z",
+        "type": "signal_capture"
       }
     ],
     "last_image_id": "CHU4VQHF"
@@ -898,36 +895,16 @@
     "kit_id": "SNAKE_EATER",
     "notes": "KINETIC UAV on Op SNAKE_EATER",
     "created_at": "2025-09-02",
-    "lat": 33.992667711032695,
-    "lon": 32.0147797724275,
+    "lat": 33.987779034294995,
+    "lon": 32.015688532463464,
     "accuracy_m": null,
-    "battery_pct": 81,
+    "battery_pct": 75,
     "tamper_status": "OK",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:11:04.661Z",
+    "last_seen": "2025-09-04T11:24:35.954Z",
     "last_image_url": "YTIEXHNZ",
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T13:15:14.529Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T13:15:21.496Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T13:15:35.330Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T13:30:56.788Z",
-        "type": "image_fragment"
-      },
-      {
-        "ts": "2025-09-03T13:32:24.084Z",
-        "type": "image_fragment"
-      },
       {
         "ts": "2025-09-03T13:33:49.805Z",
         "type": "image_fragment"
@@ -1107,6 +1084,26 @@
       {
         "ts": "2025-09-03T14:11:04.661Z",
         "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-03T15:10:34.578Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:21:14.609Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:21:24.705Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:21:54.960Z",
+        "type": "image_fragment"
+      },
+      {
+        "ts": "2025-09-04T11:24:35.954Z",
+        "type": "image_fragment"
       }
     ],
     "last_image_id": "FHLCMW8I"
@@ -1120,61 +1117,16 @@
     "kit_id": "REDZONE",
     "notes": "SATCOM GPS Beacon fitted into car A in Op REDZONE",
     "created_at": "2025-09-02",
-    "lat": 21.993746811105993,
-    "lon": 22.996649917041506,
+    "lat": 22.00209133372117,
+    "lon": 23.008396793171173,
     "accuracy_m": null,
-    "battery_pct": 10,
+    "battery_pct": 22,
     "tamper_status": "OK",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:11:08.705Z",
+    "last_seen": "2025-09-04T11:26:37.150Z",
     "last_image_url": null,
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T11:47:07.325Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:50:26.125Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:50:59.803Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:52:23.924Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:56:31.981Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:58:08.078Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:58:39.999Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T11:59:45.056Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:00:28.292Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
       {
         "ts": "2025-09-03T12:02:36.022Z",
         "type": "API_REFRESH",
@@ -1339,6 +1291,42 @@
       {
         "ts": "2025-09-03T14:11:08.705Z",
         "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T15:11:15.468Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T15:11:35.736Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T06:56:35.596Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:23:15.476Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:24:56.134Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:25:36.662Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:25:56.782Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:26:27.092Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:26:37.150Z",
+        "type": "beacon"
       }
     ]
   },
@@ -1351,40 +1339,16 @@
     "kit_id": "REDZONE",
     "notes": "SATCOM GPS Beacon fitted into car B in Op REDZONE",
     "created_at": "2025-09-02",
-    "lat": 22.005447231777378,
-    "lon": 23.00031985365978,
+    "lat": 21.99713537537781,
+    "lon": 22.99060570325684,
     "accuracy_m": null,
-    "battery_pct": 47,
-    "tamper_status": "TAMPERED",
+    "battery_pct": 65,
+    "tamper_status": "OK",
     "connectivity": "ONLINE",
-    "last_seen": "2025-09-03T14:50:26.493Z",
+    "last_seen": "2025-09-04T11:23:55.698Z",
     "last_image_url": null,
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T12:42:38.814Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T13:13:46.829Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T13:14:30.004Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T13:14:30.942Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T13:16:42.502Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T13:32:13.667Z",
-        "type": "beacon"
-      },
       {
         "ts": "2025-09-03T13:32:34.668Z",
         "type": "beacon"
@@ -1560,6 +1524,30 @@
       {
         "ts": "2025-09-03T14:50:26.493Z",
         "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T15:11:05.365Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-03T15:11:45.945Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T06:56:56.000Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T06:57:06.114Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:22:15.083Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:23:55.698Z",
+        "type": "beacon"
       }
     ]
   },
@@ -1572,34 +1560,16 @@
     "kit_id": "TOUCHDOWN",
     "notes": "SATCOM GPS Beacon fitted into car in Op TOUCHDOWN",
     "created_at": "2025-09-02",
-    "lat": 43.99157298568693,
-    "lon": 22.997502157870652,
+    "lat": 43.993468320725796,
+    "lon": 22.998951945696636,
     "accuracy_m": null,
-    "battery_pct": 13,
+    "battery_pct": 65,
     "tamper_status": "OK",
-    "connectivity": "OFFLINE",
-    "last_seen": "2025-09-03T14:50:36.664Z",
+    "connectivity": "ONLINE",
+    "last_seen": "2025-09-04T11:23:35.591Z",
     "last_image_url": null,
     "stream_url": null,
     "event_log": [
-      {
-        "ts": "2025-09-03T12:01:53.333Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:02:46.882Z",
-        "type": "API_REFRESH",
-        "payload_type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:29:16.296Z",
-        "type": "beacon"
-      },
-      {
-        "ts": "2025-09-03T12:30:03.607Z",
-        "type": "beacon"
-      },
       {
         "ts": "2025-09-03T12:30:14.014Z",
         "type": "beacon"
@@ -1782,6 +1752,22 @@
       },
       {
         "ts": "2025-09-03T14:50:36.664Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T06:56:45.682Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:21:04.522Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:21:52.667Z",
+        "type": "beacon"
+      },
+      {
+        "ts": "2025-09-04T11:23:35.591Z",
         "type": "beacon"
       }
     ]
